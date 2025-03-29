@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/highlight_service_widget.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
 import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
@@ -302,7 +303,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
           clipBehavior: Clip.none,
           initialEntries: [
             OverlayEntry(
-              builder: (context) => services!,
+              builder: (context) => services ?? const SizedBox.shrink(),
             ),
           ],
         ),
@@ -317,6 +318,18 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       header: widget.header,
       footer: widget.footer,
     );
+
+    if (!widget.editable) {
+      return ScrollServiceWidget(
+        key: editorState.service.scrollServiceKey,
+        editorScrollController: editorScrollController,
+        child: HighlightServiceWidget(
+          key: editorState.service.selectionServiceKey,
+          highlightColor: widget.editorStyle.highlightColor,
+          child: child,
+        ),
+      );
+    }
 
     if (!widget.disableKeyboardService) {
       child = KeyboardServiceWidget(

@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -125,9 +126,8 @@ class _HeadingBlockComponentWidgetState
       layoutDirection: Directionality.maybeOf(context),
     );
 
-    Widget child = Container(
-      width: double.infinity,
-      alignment: alignment,
+    Widget child = Align(
+      alignment: alignment ?? Alignment.centerLeft,
       // Related issue: https://github.com/AppFlowy-IO/AppFlowy/issues/3175
       // make the width of the rich text as small as possible to avoid
       child: Row(
@@ -165,6 +165,7 @@ class _HeadingBlockComponentWidgetState
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
+              highlightColor: editorState.editorStyle.highlightColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
@@ -177,8 +178,10 @@ class _HeadingBlockComponentWidgetState
       key: blockComponentKey,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      highlight: editorState.highlightNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],
@@ -187,9 +190,16 @@ class _HeadingBlockComponentWidgetState
 
     child = Padding(
       padding: padding,
-      child: Container(
-        color: backgroundColor,
-        child: child,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: backgroundColor ??
+              editorState.editorStyle.defaultNodeBackgroundColor,
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: child,
+        ),
       ),
     );
 

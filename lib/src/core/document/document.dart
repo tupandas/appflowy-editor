@@ -77,6 +77,9 @@ class Document {
   /// First node of the document.
   Node? get first => root.children.firstOrNull;
 
+  /// All nodes of the document.
+  List<Node> get nodes => root.children;
+
   /// Last node of the document.
   Node? get last {
     Node? current = root.children.lastOrNull;
@@ -97,6 +100,32 @@ class Document {
   /// Returns the node at the given [path].
   Node? nodeAtPath(Path path) {
     return root.childAtPath(path);
+  }
+
+  bool insertNodesToEndOfDocument(Iterable<Node> nodes) {
+    if (nodes.isEmpty) {
+      return false;
+    }
+
+    final path = this.nodes.last.path;
+
+    final target = nodeAtPath(path);
+    if (target != null) {
+      for (final node in nodes) {
+        target.insertBefore(node);
+      }
+      return true;
+    }
+
+    final parent = nodeAtPath(path.parent);
+    if (parent != null) {
+      for (var i = 0; i < nodes.length; i++) {
+        parent.insert(nodes.elementAt(i), index: path.last + i);
+      }
+      return true;
+    }
+
+    return false;
   }
 
   /// Inserts a [Node]s at the given [Path].

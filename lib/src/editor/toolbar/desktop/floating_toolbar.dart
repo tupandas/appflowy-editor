@@ -23,7 +23,6 @@ typedef FloatingToolbarBuilder = Widget Function(
   BuildContext context,
   Widget child,
   VoidCallback onDismiss,
-  bool isMetricsChanged,
 );
 
 /// A floating toolbar that displays at the top of the editor when the selection
@@ -74,8 +73,6 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
   late Brightness brightness = Theme.of(context).brightness;
 
-  bool hasMetricsChanged = false;
-
   @override
   void initState() {
     super.initState();
@@ -121,8 +118,8 @@ class _FloatingToolbarState extends State<FloatingToolbar>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    hasMetricsChanged = true;
-    _showAfterDelay(isMetricsChanged: true);
+
+    _showAfterDelay();
   }
 
   @override
@@ -142,11 +139,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
       _clear();
     } else {
       // uses debounce to avoid the computing the rects too frequently.
-      _showAfterDelay(
-        duration: const Duration(milliseconds: 200),
-        isMetricsChanged: hasMetricsChanged,
-      );
-      if (hasMetricsChanged) hasMetricsChanged = false;
+      _showAfterDelay(const Duration(milliseconds: 200));
     }
   }
 
@@ -155,7 +148,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
 
     // TODO: optimize the toolbar showing logic, making it more smooth.
     // A quick idea: based on the scroll controller's offset to display the toolbar.
-    _showAfterDelay();
+    _showAfterDelay(Duration.zero);
   }
 
   final String _debounceKey = 'show the toolbar';
@@ -167,22 +160,19 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     _toolbarContainer = null;
   }
 
-  void _showAfterDelay({
-    Duration duration = Duration.zero,
-    bool isMetricsChanged = false,
-  }) {
+  void _showAfterDelay([Duration duration = Duration.zero]) {
     // uses debounce to avoid the computing the rects too frequently.
     Debounce.debounce(
       _debounceKey,
       duration,
       () {
         _clear(); // clear the previous toolbar.
-        _showToolbar(isMetricsChanged);
+        _showToolbar();
       },
     );
   }
 
-  void _showToolbar(bool isMetricsChanged) {
+  void _showToolbar() {
     final selection = editorState.selection;
     if (selection == null || selection.isCollapsed) {
       return;
@@ -222,8 +212,7 @@ class _FloatingToolbarState extends State<FloatingToolbar>
     _toolbarContainer = OverlayEntry(
       builder: (context) {
         final child = _buildToolbar(context);
-        return widget.toolbarBuilder
-                ?.call(context, child, _clear, isMetricsChanged) ??
+        return widget.toolbarBuilder?.call(context, child, _clear) ??
             Positioned(
               top: max(0, top) - floatingToolbarHeight,
               left: left,

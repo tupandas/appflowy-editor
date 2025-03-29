@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,12 +154,14 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   /// custom the text style
   EditorStyle customizeEditorStyle() {
     return EditorStyle(
+      defaultNodeBackgroundColor: CupertinoColors.systemGrey6,
       padding: UniversalPlatform.isDesktopOrWeb
           ? const EdgeInsets.only(left: 200, right: 200)
           : const EdgeInsets.symmetric(horizontal: 20),
       cursorColor: Colors.green,
       dragHandleColor: Colors.green,
       selectionColor: Colors.green.withValues(alpha: 0.5),
+      highlightColor: Colors.amber.withValues(alpha: 0.5),
       textStyleConfiguration: TextStyleConfiguration(
         text: GoogleFonts.poppins(
           fontSize: 14.0,

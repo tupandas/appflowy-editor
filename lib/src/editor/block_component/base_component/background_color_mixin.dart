@@ -12,18 +12,17 @@ BlockComponentBackgroundColorDecorator? blockComponentBackgroundColorDecorator;
 mixin BlockComponentBackgroundColorMixin {
   Node get node;
 
-  Color get backgroundColor {
+  Color? get backgroundColor {
     final colorString =
         node.attributes[blockComponentBackgroundColor] as String?;
     if (colorString == null) {
-      return Colors.transparent;
+      return null;
     }
 
     return blockComponentBackgroundColorDecorator?.call(
           node,
           colorString,
         ) ??
-        colorString.tryToColor() ??
-        Colors.transparent;
+        colorString.tryToColor();
   }
 }

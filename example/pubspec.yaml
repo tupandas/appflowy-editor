@@ -42,21 +42,23 @@ dependencies:
   universal_html: ^2.0.8
   highlight: ^0.7.0
   http: ^1.1.0
-  show_fps: ^1.0.6
+  # show_fps: ^1.0.6
   printing: ^5.11.1
-  appflowy_editor_plugins: ^0.0.6
+  # appflowy_editor_plugins: ^0.0.6
   markdown:
   universal_platform: ^1.1.0
+
+  defer_pointer: ^0.0.2
 
 dependency_overrides:
   appflowy_editor:
     path: ../
 
-  appflowy_editor_plugins:
-    git:
-      url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
-      path: "packages/appflowy_editor_plugins"
-      ref: "ca82890"
+  # appflowy_editor_plugins:
+  #   git:
+  #     url: https://github.com/AppFlowy-IO/AppFlowy-plugins.git
+  #     path: "packages/appflowy_editor_plugins"
+  #     ref: "ca82890"
 
 dev_dependencies:
   flutter_test:
@@ -81,7 +83,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
     - assets/
     - assets/images/
 

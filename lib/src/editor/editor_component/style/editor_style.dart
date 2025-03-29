@@ -1,4 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// The style of the editor.
@@ -6,12 +7,14 @@ import 'package:flutter/material.dart';
 /// You can customize the style of the editor by passing the [EditorStyle] to
 ///  the [AppFlowyEditor].
 ///
-class EditorStyle {
+class EditorStyle extends Equatable {
   const EditorStyle({
     required this.padding,
     required this.cursorColor,
     required this.dragHandleColor,
     required this.selectionColor,
+    required this.highlightColor,
+    required this.defaultNodeBackgroundColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -49,6 +52,12 @@ class EditorStyle {
 
   // The selection color
   final Color selectionColor;
+
+  // The highlight color
+  final Color highlightColor;
+
+  // The background color of the node.
+  final Color defaultNodeBackgroundColor;
 
   // Customize the text style of the editor.
   //
@@ -109,6 +118,8 @@ class EditorStyle {
     EdgeInsets? padding,
     Color? cursorColor,
     Color? selectionColor,
+    Color? highlightColor,
+    Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -120,6 +131,10 @@ class EditorStyle {
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =
             selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        highlightColor =
+            highlightColor ?? const Color.fromARGB(53, 209, 14, 154),
+        defaultNodeBackgroundColor =
+            defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
             const TextStyleConfiguration(
               text: TextStyle(fontSize: 16, color: Colors.black),
@@ -142,6 +157,8 @@ class EditorStyle {
     Color? cursorColor,
     Color? dragHandleColor,
     Color? selectionColor,
+    Color? highlightColor,
+    Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -163,6 +180,10 @@ class EditorStyle {
         dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
         selectionColor =
             selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
+        highlightColor =
+            highlightColor ?? const Color.fromARGB(53, 28, 164, 35),
+        defaultNodeBackgroundColor =
+            defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
             const TextStyleConfiguration(
               text: TextStyle(fontSize: 16, color: Colors.black),
@@ -175,6 +196,8 @@ class EditorStyle {
     Color? cursorColor,
     Color? dragHandleColor,
     Color? selectionColor,
+    Color? highlightColor,
+    Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder,
@@ -197,6 +220,9 @@ class EditorStyle {
       cursorColor: cursorColor ?? this.cursorColor,
       dragHandleColor: dragHandleColor ?? this.dragHandleColor,
       selectionColor: selectionColor ?? this.selectionColor,
+      highlightColor: highlightColor ?? this.highlightColor,
+      defaultNodeBackgroundColor:
+          defaultNodeBackgroundColor ?? this.defaultNodeBackgroundColor,
       textStyleConfiguration:
           textStyleConfiguration ?? this.textStyleConfiguration,
       textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
@@ -225,4 +251,29 @@ class EditorStyle {
           this.autoDismissCollapsedHandleDuration,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        padding,
+        cursorColor,
+        dragHandleColor,
+        selectionColor,
+        highlightColor,
+        defaultNodeBackgroundColor,
+        textStyleConfiguration,
+        textSpanDecorator,
+        textSpanOverlayBuilder,
+        magnifierSize,
+        mobileDragHandleBallSize,
+        mobileDragHandleWidth,
+        enableHapticFeedbackOnAndroid,
+        cursorWidth,
+        textScaleFactor,
+        maxWidth,
+        mobileDragHandleTopExtend,
+        mobileDragHandleWidthExtend,
+        mobileDragHandleLeftExtend,
+        mobileDragHandleHeightExtend,
+        autoDismissCollapsedHandleDuration,
+      ];
 }

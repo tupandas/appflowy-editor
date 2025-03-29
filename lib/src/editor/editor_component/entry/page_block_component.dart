@@ -3,6 +3,7 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/widget
 import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 class PageBlockKeys {
   static const String type = 'page';
@@ -64,13 +65,15 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               children: [
                 if (header != null) header!,
                 ...items.map(
-                  (e) => Container(
+                  (e) => ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth:
                           editorState.editorStyle.maxWidth ?? double.infinity,
                     ),
-                    padding: editorState.editorStyle.padding,
-                    child: editorState.renderer.build(context, e),
+                    child: Padding(
+                      padding: editorState.editorStyle.padding,
+                      child: editorState.renderer.build(context, e),
+                    ),
                   ),
                 ),
                 if (footer != null) footer!,
@@ -103,14 +106,16 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
           }
 
           return Center(
-            child: Container(
+            child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: editorState.editorStyle.maxWidth ?? double.infinity,
               ),
-              padding: editorState.editorStyle.padding,
-              child: editorState.renderer.build(
-                context,
-                items[index - (header != null ? 1 : 0)],
+              child: Padding(
+                padding: editorState.editorStyle.padding,
+                child: editorState.renderer.build(
+                  context,
+                  items[index - (header != null ? 1 : 0)],
+                ),
               ),
             ),
           );

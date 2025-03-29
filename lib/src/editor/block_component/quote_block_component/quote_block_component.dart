@@ -147,6 +147,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
                 textDirection: textDirection,
                 cursorColor: editorState.editorStyle.cursorColor,
                 selectionColor: editorState.editorStyle.selectionColor,
+                highlightColor: editorState.editorStyle.highlightColor,
                 cursorWidth: editorState.editorStyle.cursorWidth,
               ),
             ),
@@ -155,12 +156,19 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       ),
     );
 
-    child = Container(
-      color: backgroundColor,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
+    child = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: backgroundColor ??
+              editorState.editorStyle.defaultNodeBackgroundColor,
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Padding(
+          key: blockComponentKey,
+          padding: padding.add(const EdgeInsets.all(8)),
+          child: child,
+        ),
       ),
     );
 
@@ -168,8 +176,10 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      highlight: editorState.highlightNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],

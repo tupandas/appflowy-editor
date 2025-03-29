@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/selection/selection_area_painter.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
@@ -12,6 +14,7 @@ final _deepEqual = const DeepCollectionEquality().equals;
 enum BlockSelectionType {
   cursor,
   selection,
+  highlight,
   block,
 }
 
@@ -94,6 +97,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         final selection = value?.normalized;
 
         if (selection == null) {
+          log('selection is null');
           return sizedBox;
         }
 
@@ -103,6 +107,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
         }
 
         final editorState = context.read<EditorState>();
+
         if (editorState.selectionType == SelectionType.block) {
           if (!widget.supportTypes.contains(BlockSelectionType.block) ||
               !path.inSelection(selection, isSameDepth: true) ||
@@ -136,6 +141,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
               editorState.selectionExtraInfo?[selectionDragModeKey];
           final shouldBlink = widget.delegate.shouldCursorBlink &&
               dragMode != MobileSelectionDragMode.cursor;
+
           final cursor = Cursor(
             key: cursorKey,
             rect: prevCursorRect!,
@@ -155,8 +161,9 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
                   prevSelectionRects!.first.width == 0)) {
             return sizedBox;
           }
+
           return SelectionAreaPaint(
-            rects: prevSelectionRects!,
+            rects: prevSelectionRects ?? <Rect>[],
             selectionColor: widget.selectionColor,
           );
         }

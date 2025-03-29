@@ -154,6 +154,7 @@ class _BulletedListBlockComponentWidgetState
               textDirection: textDirection,
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
+              highlightColor: editorState.editorStyle.highlightColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
@@ -161,12 +162,21 @@ class _BulletedListBlockComponentWidgetState
       ),
     );
 
-    child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
+    child = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: withBackgroundColor
+              ? backgroundColor ??
+                  editorState.editorStyle.defaultNodeBackgroundColor
+              : null,
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Padding(
+          key: blockComponentKey,
+          padding: padding.add(const EdgeInsets.all(8)),
+          child: child,
+        ),
       ),
     );
 
@@ -175,7 +185,9 @@ class _BulletedListBlockComponentWidgetState
       delegate: this,
       listenable: editorState.selectionNotifier,
       remoteSelection: editorState.remoteSelections,
+      highlight: editorState.highlightNotifier,
       blockColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],
@@ -228,15 +240,18 @@ class _BulletedListIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final textScaleFactor =
         context.read<EditorState>().editorStyle.textScaleFactor;
-    return Container(
+
+    return ConstrainedBox(
       constraints:
           const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
-      padding: const EdgeInsets.only(right: 4.0),
-      child: Center(
-        child: Text(
-          icon,
-          style: textStyle,
-          textScaler: TextScaler.linear(0.5 * textScaleFactor),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 4.0),
+        child: Center(
+          child: Text(
+            icon,
+            style: textStyle,
+            textScaler: TextScaler.linear(0.5 * textScaleFactor),
+          ),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nanoid/non_secure.dart';
+import 'package:uuid/uuid.dart';
 
 void main() async {
   group('diff.dart', () {
@@ -27,11 +27,9 @@ void main() async {
     }
 
     test('text changes', () async {
-      final id = nanoid(6);
-      final documentA = Document.blank()
-        ..insert([0], [buildNodeWithId(id, 'Hello World')]);
-      final documentB = Document.blank()
-        ..insert([0], [buildNodeWithId(id, 'Hello AppFlowy!')]);
+      final id = Uuid().v4();
+      final documentA = Document.blank()..insert([0], [buildNodeWithId(id, 'Hello World')]);
+      final documentB = Document.blank()..insert([0], [buildNodeWithId(id, 'Hello AppFlowy!')]);
 
       final ops = diffDocuments(documentA, documentB);
       expect(ops.length, 1);
@@ -47,8 +45,8 @@ void main() async {
     });
 
     test('insert', () async {
-      final id1 = nanoid(6);
-      final id2 = nanoid(6);
+      final id1 = Uuid().v4();
+      final id2 = Uuid().v4();
       final documentA = Document.blank()
         ..insert(
           [0],
@@ -76,8 +74,8 @@ void main() async {
     });
 
     test('delete', () async {
-      final id1 = nanoid(6);
-      final id2 = nanoid(6);
+      final id1 = Uuid().v4();
+      final id2 = Uuid().v4();
       final documentA = Document.blank()
         ..insert(
           [0],
@@ -105,11 +103,11 @@ void main() async {
     });
 
     test('continuous insert ', () async {
-      final id1 = nanoid(6);
-      final id2 = nanoid(6);
-      final id3 = nanoid(6);
-      final id4 = nanoid(6);
-      final id5 = nanoid(6);
+      final id1 = Uuid().v4();
+      final id2 = Uuid().v4();
+      final id3 = Uuid().v4();
+      final id4 = Uuid().v4();
+      final id5 = Uuid().v4();
       final documentA = Document.blank()
         ..insert(
           [0],
@@ -144,11 +142,11 @@ void main() async {
     });
 
     test('continuous delete ', () async {
-      final id1 = nanoid(6);
-      final id2 = nanoid(6);
-      final id3 = nanoid(6);
-      final id4 = nanoid(6);
-      final id5 = nanoid(6);
+      final id1 = Uuid().v4();
+      final id2 = Uuid().v4();
+      final id3 = Uuid().v4();
+      final id4 = Uuid().v4();
+      final id5 = Uuid().v4();
       final documentA = Document.blank()
         ..insert(
           [0],

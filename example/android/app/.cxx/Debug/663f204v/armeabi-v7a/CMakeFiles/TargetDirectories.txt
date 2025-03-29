@@ -1,0 +1,2 @@
+/Users/batuhankucuk/Downloads/appflowy-editor-main/example/android/app/.cxx/Debug/663f204v/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/batuhankucuk/Downloads/appflowy-editor-main/example/android/app/.cxx/Debug/663f204v/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -89,18 +89,12 @@ abstract class AppFlowySelectionService {
   void unregisterGestureInterceptor(String key);
 
   /// The functions below are only for mobile.
-  Selection? onPanStart(
-    DragStartDetails details,
-    MobileSelectionDragMode mode,
-  );
+  Selection? onPanStart(DragStartDetails details, MobileSelectionDragMode mode);
+
   Selection? onPanUpdate(
-    DragUpdateDetails details,
-    MobileSelectionDragMode mode,
-  );
-  void onPanEnd(
-    DragEndDetails details,
-    MobileSelectionDragMode mode,
-  );
+      DragUpdateDetails details, MobileSelectionDragMode mode);
+
+  void onPanEnd(DragEndDetails details, MobileSelectionDragMode mode);
 
   /// Draws a horizontal line between the nearest nodes to the [offset].
   ///

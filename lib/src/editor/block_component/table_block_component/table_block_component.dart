@@ -229,18 +229,26 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       ),
     );
 
-    child = Padding(
-      key: tableKey,
-      padding: padding,
-      child: child,
+    child = DecoratedBox(
+      decoration: BoxDecoration(
+        color: editorState.editorStyle.defaultNodeBackgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        key: tableKey,
+        padding: padding.add(const EdgeInsets.all(8)),
+        child: child,
+      ),
     );
 
     child = BlockSelectionContainer(
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      highlight: editorState.highlightNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],

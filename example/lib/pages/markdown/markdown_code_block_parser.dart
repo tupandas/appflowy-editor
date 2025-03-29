@@ -1,5 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
+// import 'package:appflowy_editor_plugins/appflowy_editor_plugins.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class MarkdownCodeBlockParserV2 extends CustomMarkdownParser {
@@ -41,10 +41,10 @@ class MarkdownCodeBlockParserV2 extends CustomMarkdownParser {
     }
 
     return [
-      codeBlockNode(
-        language: language,
-        delta: Delta()..insert(code.textContent.trimRight()),
-      ),
+      // codeBlockNode(
+      //   language: language,
+      //   delta: Delta()..insert(code.textContent.trimRight()),
+      // ),
     ];
   }
 }

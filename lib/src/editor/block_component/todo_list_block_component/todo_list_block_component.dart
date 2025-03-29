@@ -1,6 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 class TodoListBlockKeys {
@@ -149,59 +150,76 @@ class _TodoListBlockComponentWidgetState
       layoutDirection: Directionality.maybeOf(context),
     );
 
-    Widget child = Container(
+    Widget child = SizedBox(
       width: double.infinity,
-      alignment: alignment,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        textDirection: textDirection,
-        children: [
-          widget.iconBuilder != null
-              ? widget.iconBuilder!(
-                  context,
-                  node,
-                  checkOrUncheck,
-                )
-              : _TodoListIcon(
-                  checked: checked,
-                  onTap: checkOrUncheck,
-                ),
-          Flexible(
-            child: AppFlowyRichText(
-              key: forwardKey,
-              delegate: this,
-              node: widget.node,
-              editorState: editorState,
-              textAlign: alignment?.toTextAlign ?? textAlign,
-              placeholderText: placeholderText,
-              textDirection: textDirection,
-              textSpanDecorator: (textSpan) => textSpan
-                  .updateTextStyle(textStyleWithTextSpan())
-                  .updateTextStyle(
-                    widget.textStyleBuilder?.call(checked) ??
-                        defaultTextStyle(),
+      child: Align(
+        alignment: alignment ??
+            (textDirection == TextDirection.ltr
+                ? Alignment.centerLeft
+                : Alignment.centerRight),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          textDirection: textDirection,
+          children: [
+            widget.iconBuilder != null
+                ? widget.iconBuilder!(
+                    context,
+                    node,
+                    checkOrUncheck,
+                  )
+                : _TodoListIcon(
+                    checked: checked,
+                    onTap: checkOrUncheck,
                   ),
-              placeholderTextSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(
-                placeholderTextStyleWithTextSpan(textSpan: textSpan),
+            Flexible(
+              child: AppFlowyRichText(
+                key: forwardKey,
+                delegate: this,
+                node: widget.node,
+                editorState: editorState,
+                textAlign: alignment?.toTextAlign ?? textAlign,
+                placeholderText: placeholderText,
+                textDirection: textDirection,
+                textSpanDecorator: (textSpan) {
+                  return textSpan
+                      .updateTextStyle(textStyleWithTextSpan())
+                      .updateTextStyle(
+                        widget.textStyleBuilder?.call(checked) ??
+                            defaultTextStyle(),
+                      );
+                },
+                placeholderTextSpanDecorator: (textSpan) =>
+                    textSpan.updateTextStyle(
+                  placeholderTextStyleWithTextSpan(textSpan: textSpan),
+                ),
+                cursorColor: editorState.editorStyle.cursorColor,
+                selectionColor: editorState.editorStyle.selectionColor,
+                highlightColor: editorState.editorStyle.highlightColor,
+                cursorWidth: editorState.editorStyle.cursorWidth,
               ),
-              cursorColor: editorState.editorStyle.cursorColor,
-              selectionColor: editorState.editorStyle.selectionColor,
-              cursorWidth: editorState.editorStyle.cursorWidth,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 
-    child = Container(
-      color: withBackgroundColor ? backgroundColor : null,
-      child: Padding(
-        key: blockComponentKey,
-        padding: padding,
-        child: child,
+    child = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: withBackgroundColor
+              ? backgroundColor ??
+                  editorState.editorStyle.defaultNodeBackgroundColor
+              : null,
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Padding(
+          key: blockComponentKey,
+          padding: padding.add(const EdgeInsets.all(8)),
+          child: child,
+        ),
       ),
     );
 
@@ -209,8 +227,10 @@ class _TodoListBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      highlight: editorState.highlightNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],
@@ -289,19 +309,24 @@ class _TodoListIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final textScaleFactor =
         context.read<EditorState>().editorStyle.textScaleFactor;
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: Container(
+        child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 26, minHeight: 22) *
               textScaleFactor,
-          padding: const EdgeInsets.only(right: 4.0),
-          child: EditorSvg(
-            width: 22,
-            height: 22,
-            name: checked ? 'check' : 'uncheck',
+          child: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: EditorSvg(
+              width: 22,
+              height: 22,
+              name: checked ? 'check' : 'uncheck',
+            )
+                .animate(key: ValueKey(checked))
+                .fadeIn(duration: 300.milliseconds),
           ),
         ),
       ),

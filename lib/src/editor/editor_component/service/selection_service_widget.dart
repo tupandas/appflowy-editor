@@ -46,7 +46,6 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       return DesktopSelectionServiceWidget(
         key: forwardKey,
         cursorColor: widget.cursorColor,
-        selectionColor: widget.selectionColor,
         contextMenuItems: widget.contextMenuItems,
         dropTargetStyle:
             widget.dropTargetStyle ?? const AppFlowyDropTargetStyle(),
@@ -58,7 +57,6 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
     return MobileSelectionServiceWidget(
       key: forwardKey,
       cursorColor: widget.cursorColor,
-      selectionColor: widget.selectionColor,
       showMagnifier: widget.showMagnifier,
       magnifierSize: editorState.editorStyle.magnifierSize,
       child: widget.child,

@@ -25,7 +25,7 @@ dependencies:
   keyboard_height_plugin: "^0.1.5"
   logging: "^1.2.0"
   markdown: "^7.2.1"
-  nanoid: "^1.0.0"
+  # nanoid: "^1.0.0"
   numerus: "^2.1.2"
   pdf: "^3.10.7"
   provider: "^6.0.5"
@@ -34,6 +34,11 @@ dependencies:
   universal_html: "^2.2.4"
   universal_platform: ^1.1.0
   url_launcher: "^6.1.11"
+
+  equatable: ^2.0.7
+  flutter_animate: ^4.5.2
+  scrollview_observer: ^1.26.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0

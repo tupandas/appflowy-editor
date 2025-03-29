@@ -82,8 +82,7 @@ class _EditorState extends State<Editor> {
           child: FutureBuilder<String>(
             future: widget.jsonString,
             builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                 if (!isInitialized || editorState == null) {
                   isInitialized = true;
                   EditorState editorState = EditorState(
@@ -133,9 +132,7 @@ class _EditorState extends State<Editor> {
               color: Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(8),
-                bottomLeft: UniversalPlatform.isMobile
-                    ? const Radius.circular(8)
-                    : Radius.zero,
+                bottomLeft: UniversalPlatform.isMobile ? const Radius.circular(8) : Radius.zero,
               ),
             ),
             child: Column(

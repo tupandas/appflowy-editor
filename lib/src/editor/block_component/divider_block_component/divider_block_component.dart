@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 class DividerBlockKeys {
@@ -10,9 +11,7 @@ class DividerBlockKeys {
 
 // creating a new callout node
 Node dividerNode() {
-  return Node(
-    type: DividerBlockKeys.type,
-  );
+  return Node(type: DividerBlockKeys.type);
 }
 
 typedef DividerBlockWrapper = Widget Function(
@@ -95,19 +94,19 @@ class _DividerBlockComponentWidgetState
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Container(
-      height: widget.height,
-      alignment: Alignment.center,
-      child: Divider(
-        color: widget.lineColor,
-        thickness: 1,
-      ),
-    );
-
-    child = Padding(
+    Widget child = Padding(
       key: dividerKey,
-      padding: padding,
-      child: child,
+      padding: padding.add(EdgeInsets.symmetric(horizontal: 16)),
+      child: SizedBox(
+        height: widget.height,
+        child: Align(
+          alignment: Alignment.center,
+          child: CustomPaint(
+            size: Size(double.infinity, 1),
+            painter: _DividerPainter(color: widget.lineColor),
+          ),
+        ).animate().fadeIn(duration: 1.seconds),
+      ),
     );
 
     final editorState = context.read<EditorState>();
@@ -116,10 +115,12 @@ class _DividerBlockComponentWidgetState
       node: node,
       delegate: this,
       listenable: editorState.selectionNotifier,
+      highlight: editorState.highlightNotifier,
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       cursorColor: editorState.editorStyle.cursorColor,
       selectionColor: editorState.editorStyle.selectionColor,
+      highlightColor: editorState.editorStyle.highlightColor,
       supportTypes: const [
         BlockSelectionType.block,
         BlockSelectionType.cursor,
@@ -218,5 +219,39 @@ class _DividerBlockComponentWidgetState
   @override
   TextDirection textDirection() {
     return TextDirection.ltr;
+  }
+}
+
+class _DividerPainter extends CustomPainter {
+  const _DividerPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    const dashWidth = 2.0;
+    const dashSpace = 8.0;
+    double startX = 0;
+    final double endX = size.width;
+
+    while (startX < endX) {
+      canvas.drawLine(
+        Offset(startX, 0),
+        Offset(startX + dashWidth, 0),
+        paint,
+      );
+      startX += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DividerPainter oldDelegate) {
+    return color != oldDelegate.color;
   }
 }

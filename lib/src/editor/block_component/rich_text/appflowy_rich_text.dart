@@ -43,6 +43,7 @@ class AppFlowyRichText extends StatefulWidget {
     this.textAlign,
     this.cursorColor = const Color.fromARGB(255, 0, 0, 0),
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
+    required this.highlightColor,
     this.autoCompleteTextProvider,
     required this.delegate,
     required this.node,
@@ -98,39 +99,33 @@ class AppFlowyRichText extends StatefulWidget {
 
   final Color cursorColor;
   final Color selectionColor;
+  final Color highlightColor;
 
   @override
   State<AppFlowyRichText> createState() => _AppFlowyRichTextState();
 }
 
-class _AppFlowyRichTextState extends State<AppFlowyRichText>
-    with SelectableMixin {
+class _AppFlowyRichTextState extends State<AppFlowyRichText> with SelectableMixin {
   final textKey = GlobalKey();
   final placeholderTextKey = GlobalKey();
 
-  RenderParagraph? get _renderParagraph =>
-      textKey.currentContext?.findRenderObject() as RenderParagraph?;
+  RenderParagraph? get _renderParagraph => textKey.currentContext?.findRenderObject() as RenderParagraph?;
 
   RenderParagraph? get _placeholderRenderParagraph =>
       placeholderTextKey.currentContext?.findRenderObject() as RenderParagraph?;
 
   TextSpanDecoratorForAttribute? get textSpanDecoratorForAttribute =>
-      widget.textSpanDecoratorForCustomAttributes ??
-      widget.editorState.editorStyle.textSpanDecorator;
+      widget.textSpanDecoratorForCustomAttributes ?? widget.editorState.editorStyle.textSpanDecorator;
 
   AppFlowyAutoCompleteTextProvider? get autoCompleteTextProvider =>
-      widget.autoCompleteTextProvider ??
-      widget.editorState.autoCompleteTextProvider;
+      widget.autoCompleteTextProvider ?? widget.editorState.autoCompleteTextProvider;
 
-  bool get enableAutoComplete =>
-      widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
+  bool get enableAutoComplete => widget.editorState.enableAutoComplete && autoCompleteTextProvider != null;
 
-  TextStyleConfiguration get textStyleConfiguration =>
-      widget.editorState.editorStyle.textStyleConfiguration;
+  TextStyleConfiguration get textStyleConfiguration => widget.editorState.editorStyle.textStyleConfiguration;
 
   AppFlowyTextSpanOverlayBuilder? get textSpanOverlayBuilder =>
-      widget.textSpanOverlayBuilder ??
-      widget.editorState.editorStyle.textSpanOverlayBuilder;
+      widget.textSpanOverlayBuilder ?? widget.editorState.editorStyle.textSpanOverlayBuilder;
 
   @override
   void initState() {
@@ -161,10 +156,12 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return BlockSelectionContainer(
       delegate: widget.delegate,
       listenable: widget.editorState.selectionNotifier,
+      highlight: widget.editorState.highlightNotifier,
       remoteSelection: widget.editorState.remoteSelections,
       node: widget.node,
       cursorColor: widget.cursorColor,
       selectionColor: widget.selectionColor,
+      highlightColor: widget.highlightColor,
       child: MouseRegion(
         cursor: SystemMouseCursors.text,
         child: child,
@@ -198,20 +195,17 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
 
     final delta = widget.node.delta;
-    if (position.offset < 0 ||
-        (delta != null && position.offset > delta.length)) {
+    if (position.offset < 0 || (delta != null && position.offset > delta.length)) {
       return null;
     }
 
     final textPosition = TextPosition(offset: position.offset);
-    double? placeholderCursorHeight =
-        _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
-    Offset? placeholderCursorOffset =
-        _placeholderRenderParagraph?.getOffsetForCaret(
-              textPosition,
-              Rect.zero,
-            ) ??
-            Offset.zero;
+    double? placeholderCursorHeight = _placeholderRenderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? placeholderCursorOffset = _placeholderRenderParagraph?.getOffsetForCaret(
+          textPosition,
+          Rect.zero,
+        ) ??
+        Offset.zero;
     if (textDirection() == TextDirection.rtl) {
       if (widget.placeholderText.trim().isNotEmpty) {
         placeholderCursorOffset = placeholderCursorOffset.translate(
@@ -221,11 +215,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       }
     }
 
-    double? cursorHeight =
-        _renderParagraph?.getFullHeightForCaret(textPosition);
-    Offset? cursorOffset =
-        _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ??
-            Offset.zero;
+    double? cursorHeight = _renderParagraph?.getFullHeightForCaret(textPosition);
+    Offset? cursorOffset = _renderParagraph?.getOffsetForCaret(textPosition, Rect.zero) ?? Offset.zero;
 
     if (placeholderCursorHeight != null) {
       cursorHeight = max(cursorHeight ?? 0, placeholderCursorHeight);
@@ -254,21 +245,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Position getPositionInOffset(Offset start) {
     final offset = _renderParagraph?.globalToLocal(start) ?? Offset.zero;
-    final baseOffset =
-        _renderParagraph?.getPositionForOffset(offset).offset ?? -1;
+    final baseOffset = _renderParagraph?.getPositionForOffset(offset).offset ?? -1;
     return Position(path: widget.node.path, offset: baseOffset);
   }
 
   @override
   Selection? getWordEdgeInOffset(Offset offset) {
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
-    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
-        const TextPosition(offset: 0);
-    final textRange =
-        _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
-    final wordEdgeOffset = textPosition.offset <= textRange.start
-        ? textRange.start
-        : textRange.end;
+    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ?? const TextPosition(offset: 0);
+    final textRange = _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
+    final wordEdgeOffset = textPosition.offset <= textRange.start ? textRange.start : textRange.end;
 
     return Selection.collapsed(
       Position(path: widget.node.path, offset: wordEdgeOffset),
@@ -278,10 +264,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Selection? getWordBoundaryInOffset(Offset offset) {
     final localOffset = _renderParagraph?.globalToLocal(offset) ?? Offset.zero;
-    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ??
-        const TextPosition(offset: 0);
-    final textRange =
-        _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
+    final textPosition = _renderParagraph?.getPositionForOffset(localOffset) ?? const TextPosition(offset: 0);
+    final textRange = _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
     final start = Position(path: widget.node.path, offset: textRange.start);
     final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
@@ -290,8 +274,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
   @override
   Selection? getWordBoundaryInPosition(Position position) {
     final textPosition = TextPosition(offset: position.offset);
-    final textRange =
-        _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
+    final textRange = _renderParagraph?.getWordBoundary(textPosition) ?? TextRange.empty;
     final start = Position(path: widget.node.path, offset: textRange.start);
     final end = Position(path: widget.node.path, offset: textRange.end);
     return Selection(start: start, end: end);
@@ -356,10 +339,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     }
     final localStart = _renderParagraph?.globalToLocal(start) ?? Offset.zero;
     final localEnd = _renderParagraph?.globalToLocal(end) ?? Offset.zero;
-    final baseOffset =
-        _renderParagraph?.getPositionForOffset(localStart).offset ?? -1;
-    final extentOffset =
-        _renderParagraph?.getPositionForOffset(localEnd).offset ?? -1;
+    final baseOffset = _renderParagraph?.getPositionForOffset(localStart).offset ?? -1;
+    final extentOffset = _renderParagraph?.getPositionForOffset(localEnd).offset ?? -1;
     return Selection.single(
       path: widget.node.path,
       startOffset: baseOffset,
@@ -395,10 +376,8 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     return RichText(
       key: placeholderTextKey,
       textHeightBehavior: TextHeightBehavior(
-        applyHeightToFirstAscent:
-            textStyleConfiguration.applyHeightToFirstAscent,
-        applyHeightToLastDescent:
-            textStyleConfiguration.applyHeightToLastDescent,
+        applyHeightToFirstAscent: textStyleConfiguration.applyHeightToFirstAscent,
+        applyHeightToLastDescent: textStyleConfiguration.applyHeightToLastDescent,
         leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
       text: textSpan,
@@ -417,20 +396,18 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       textSpan = widget.textSpanDecorator!(textSpan);
     }
     textSpan = adjustTextSpan(textSpan);
+
     return RichText(
       key: textKey,
       textAlign: widget.textAlign ?? TextAlign.start,
       textHeightBehavior: TextHeightBehavior(
-        applyHeightToFirstAscent:
-            textStyleConfiguration.applyHeightToFirstAscent,
-        applyHeightToLastDescent:
-            textStyleConfiguration.applyHeightToLastDescent,
+        applyHeightToFirstAscent: textStyleConfiguration.applyHeightToFirstAscent,
+        applyHeightToLastDescent: textStyleConfiguration.applyHeightToLastDescent,
         leadingDistribution: textStyleConfiguration.leadingDistribution,
       ),
       text: textSpan,
       textDirection: textDirection(),
-      textScaler:
-          TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+      textScaler: TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
     );
   }
 
@@ -493,16 +470,13 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
         return RichText(
           textAlign: widget.textAlign ?? TextAlign.start,
           textHeightBehavior: TextHeightBehavior(
-            applyHeightToFirstAscent:
-                textStyleConfiguration.applyHeightToFirstAscent,
-            applyHeightToLastDescent:
-                textStyleConfiguration.applyHeightToLastDescent,
+            applyHeightToFirstAscent: textStyleConfiguration.applyHeightToFirstAscent,
+            applyHeightToLastDescent: textStyleConfiguration.applyHeightToLastDescent,
             leadingDistribution: textStyleConfiguration.leadingDistribution,
           ),
           text: textSpan,
           textDirection: textDirection(),
-          textScaler:
-              TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
+          textScaler: TextScaler.linear(widget.editorState.editorStyle.textScaleFactor),
         );
       },
     );
@@ -703,8 +677,7 @@ extension AppFlowyRichTextAttributes on Attributes {
   bool get code => this[AppFlowyRichTextKeys.code] == true;
 
   bool get strikethrough {
-    return (containsKey(AppFlowyRichTextKeys.strikethrough) &&
-        this[AppFlowyRichTextKeys.strikethrough] == true);
+    return (containsKey(AppFlowyRichTextKeys.strikethrough) && this[AppFlowyRichTextKeys.strikethrough] == true);
   }
 
   Color? get color {
@@ -713,14 +686,12 @@ extension AppFlowyRichTextAttributes on Attributes {
   }
 
   Color? get backgroundColor {
-    final highlightColor =
-        this[AppFlowyRichTextKeys.backgroundColor] as String?;
+    final highlightColor = this[AppFlowyRichTextKeys.backgroundColor] as String?;
     return highlightColor?.tryToColor();
   }
 
   Color? get findBackgroundColor {
-    final findBackgroundColor =
-        this[AppFlowyRichTextKeys.findBackgroundColor] as String?;
+    final findBackgroundColor = this[AppFlowyRichTextKeys.findBackgroundColor] as String?;
     return findBackgroundColor?.tryToColor();
   }
 
