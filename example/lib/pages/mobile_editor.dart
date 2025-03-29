@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +40,6 @@ class _MobileEditorState extends State<MobileEditor> {
     editorState.highlightNotifier.addListener(() {
       final highlight = editorState.highlightNotifier.value;
 
-      log('HIGHLIGHT: $highlight');
       return;
 
       final visibleRange = editorScrollController.visibleRangeNotifier.value;
@@ -99,14 +96,13 @@ class _MobileEditorState extends State<MobileEditor> {
       }
     });
 
-    () async {
-      for (final node in editorState.document.nodes) {
-        final textInserts = node.delta?.whereType<TextInsert>();
-        final String? text = textInserts?.map((t) => t.text).join();
-        await Future.delayed(const Duration(milliseconds: 1));
-        log('TEXT::::::: $text');
-      }
-    }();
+    // () async {
+    //   for (final node in editorState.document.nodes) {
+    //     final textInserts = node.delta?.whereType<TextInsert>();
+    //     final String? text = textInserts?.map((t) => t.text).join();
+    //     await Future.delayed(const Duration(milliseconds: 1));
+    //   }
+    // }();
 
     editorStyle = _buildMobileEditorStyle();
     blockComponentBuilders = _buildBlockComponentBuilders();
@@ -130,7 +126,6 @@ class _MobileEditorState extends State<MobileEditor> {
             final textInserts = node.delta?.whereType<TextInsert>();
             final String? text = textInserts?.map((t) => t.text).join();
 
-            print('TEXT::::::: $text');
             editorState.updateHighlight(
               Selection(
                 start: Position(offset: 0, path: node.path),
