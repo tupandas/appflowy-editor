@@ -332,8 +332,8 @@ class _HighlightAreaPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_HighlightAreaPainter oldDelegate) {
-    return DeepCollectionEquality().equals(rects, oldDelegate.rects) ||
-        selectionColor != oldDelegate.selectionColor;
+    return selectionColor != oldDelegate.selectionColor ||
+        !const DeepCollectionEquality().equals(rects, oldDelegate.rects);
   }
 }
 

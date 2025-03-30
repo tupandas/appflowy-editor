@@ -1,15 +1,12 @@
-import 'dart:developer';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_highlight_service.dart';
+import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
-import 'package:appflowy_editor/src/editor/editor_component/service/selection/shared.dart';
-import 'package:appflowy_editor/src/service/selection/mobile_selection_gesture.dart';
-import 'package:provider/provider.dart';
 
 class HighlightServiceWidget extends StatefulWidget {
   const HighlightServiceWidget({
     super.key,
-    this.highlightColor = const Color.fromARGB(53, 215, 205, 17),
+    this.highlightColor = const Color.fromARGB(53, 111, 201, 231),
     required this.child,
   });
 
@@ -20,54 +17,112 @@ class HighlightServiceWidget extends StatefulWidget {
   State<HighlightServiceWidget> createState() => _HighlightServiceWidgetState();
 }
 
-class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
-  late final EditorState editorState = Provider.of<EditorState>(
-    context,
-    listen: false,
+class _HighlightServiceWidgetState extends State<HighlightServiceWidget>
+    with WidgetsBindingObserver
+    implements AppFlowySelectionService {
+  final forwardKey = GlobalKey(
+    debugLabel: 'forward_to_platform_highlight_service',
   );
+  AppFlowySelectionService get forward =>
+      forwardKey.currentState as AppFlowySelectionService;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: MobileSelectionGestureDetector(
-        onTapUp: _onTripleTapUp,
-        child: widget.child,
-      ),
+    // if (PlatformExtension.isDesktopOrWeb) {
+    //   return DesktopSelectionServiceWidget(
+    //     key: forwardKey,
+    //     cursorColor: widget.cursorColor,
+    //     contextMenuItems: widget.contextMenuItems,
+    //     dropTargetStyle:
+    //         widget.dropTargetStyle ?? const AppFlowyDropTargetStyle(),
+    //     child: widget.child,
+    //   );
+    // }
+
+    return MobileHighlightServiceWidget(
+      key: forwardKey,
+      highlightColor: widget.highlightColor,
+      child: widget.child,
     );
   }
 
-  void updateSelection(Selection? selection) {
-    if (selection == null) return;
-    editorState.updateHighlight(selection);
-  }
+  @override
+  void clearCursor() => forward.clearCursor();
 
-  Node? getNodeInOffset(Offset offset) {
-    final List<Node> sortedNodes = editorState.getVisibleNodes(
-      context.read<EditorScrollController>(),
-    );
+  @override
+  void clearSelection() => forward.clearSelection();
 
-    final node = editorState.getNodeInOffset(
-      sortedNodes,
-      offset,
-      0,
-      sortedNodes.length - 1,
-    );
+  @override
+  List<Node> get currentSelectedNodes => forward.currentSelectedNodes;
 
-    return node;
-  }
+  @override
+  ValueNotifier<Selection?> get currentSelection => forward.currentSelection;
 
-  void _onTripleTapUp(TapUpDetails details) {
-    log('${editorState.scrollableState?.axisDirection}');
+  @override
+  Node? getNodeInOffset(Offset offset) => forward.getNodeInOffset(offset);
 
-    final offset = details.globalPosition;
-    final node = getNodeInOffset(offset);
-    // select node closest to offset
-    final selectable = node?.selectable;
-    if (selectable == null) return;
+  @override
+  Position? getPositionInOffset(Offset offset) =>
+      forward.getPositionInOffset(offset);
 
-    final selection =
-        Selection(start: selectable.start(), end: selectable.end());
+  @override
+  void registerGestureInterceptor(SelectionGestureInterceptor interceptor) =>
+      forward.registerGestureInterceptor(interceptor);
 
-    updateSelection(selection);
-  }
+  @override
+  List<Rect> get selectionRects => forward.selectionRects;
+
+  @override
+  void unregisterGestureInterceptor(String key) =>
+      forward.unregisterGestureInterceptor(key);
+
+  @override
+  void updateSelection(Selection? selection) =>
+      forward.updateSelection(selection);
+
+  @override
+  Selection? onPanStart(
+    DragStartDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanStart(details, mode);
+
+  @override
+  Selection? onPanUpdate(
+    DragUpdateDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanUpdate(details, mode);
+
+  @override
+  void onPanEnd(
+    DragEndDetails details,
+    MobileSelectionDragMode mode,
+  ) =>
+      forward.onPanEnd(details, mode);
+
+  @override
+  void removeDropTarget() => forward.removeDropTarget();
+
+  @override
+  void renderDropTargetForOffset(
+    Offset offset, {
+    DragAreaBuilder? builder,
+    DragTargetNodeInterceptor? interceptor,
+  }) =>
+      forward.renderDropTargetForOffset(
+        offset,
+        builder: builder,
+        interceptor: interceptor,
+      );
+
+  @override
+  DropTargetRenderData? getDropTargetRenderData(
+    Offset offset, {
+    DragTargetNodeInterceptor? interceptor,
+  }) =>
+      forward.getDropTargetRenderData(
+        offset,
+        interceptor: interceptor,
+      );
 }
