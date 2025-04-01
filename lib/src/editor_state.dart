@@ -175,8 +175,6 @@ class EditorState {
 
   /// Sets the highlight of the editor.
   set tap(Selection? value) {
-    if (tapNotifier.value == value) return;
-
     tapNotifier.value = value;
   }
 
@@ -373,13 +371,7 @@ class EditorState {
     this.highlight = highlight;
   }
 
-  void updateTap(
-    Selection? tap,
-  ) {
-    if (tap == null || tap == this.tap) {
-      return;
-    }
-
+  void updateTap(Selection? tap) {
     this.tap = tap;
   }
 
