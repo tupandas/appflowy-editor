@@ -128,6 +128,7 @@ class _MobileHighlightServiceWidgetState
 
     currentSelection.value = selection;
     editorState.updateHighlight(selection);
+    editorState.updateTap(selection);
   }
 
   @override

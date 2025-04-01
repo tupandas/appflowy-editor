@@ -137,11 +137,17 @@ class EditorState {
   final PropertyValueNotifier<Selection?> highlightNotifier =
       PropertyValueNotifier<Selection?>(null);
 
+  /// The tap notifier of the editor.
+  final PropertyValueNotifier<Selection?> tapNotifier =
+      PropertyValueNotifier<Selection?>(null);
+
   /// The selection of the editor.
   Selection? get selection => selectionNotifier.value;
 
   /// The highlight of the editor.
   Selection? get highlight => highlightNotifier.value;
+
+  Selection? get tap => tapNotifier.value;
 
   /// Remote selection is the selection from other users.
   final PropertyValueNotifier<List<RemoteSelection>> remoteSelections =
@@ -165,6 +171,13 @@ class EditorState {
     if (highlightNotifier.value == value) return;
 
     highlightNotifier.value = value;
+  }
+
+  /// Sets the highlight of the editor.
+  set tap(Selection? value) {
+    if (tapNotifier.value == value) return;
+
+    tapNotifier.value = value;
   }
 
   SelectionType? _selectionType;
@@ -358,6 +371,16 @@ class EditorState {
     }
 
     this.highlight = highlight;
+  }
+
+  void updateTap(
+    Selection? tap,
+  ) {
+    if (tap == null || tap == this.tap) {
+      return;
+    }
+
+    this.tap = tap;
   }
 
   @Deprecated('use updateSelectionWithReason or editorState.selection instead')
