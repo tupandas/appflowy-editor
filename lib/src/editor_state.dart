@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/scroll/auto_scroller.dart';
@@ -368,10 +369,13 @@ class EditorState {
       return;
     }
 
+    log('updateHighlight IN EDITOR STATE: $highlight');
+
     this.highlight = highlight;
   }
 
   void updateTap(Selection? tap) {
+    log('updateTap: $tap');
     this.tap = tap;
   }
 
