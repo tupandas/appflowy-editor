@@ -73,10 +73,7 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
     // move this node to it's parent in below case.
     // the node's next is null
     // and the node's children is empty
-    if (node.next == null &&
-        node.children.isEmpty &&
-        node.parent?.parent != null &&
-        node.parent?.delta != null) {
+    if (node.next == null && node.children.isEmpty && node.parent?.parent != null && node.parent?.delta != null) {
       final path = node.parent!.path.next;
       transaction
         ..deleteNode(node)
@@ -91,17 +88,14 @@ CommandShortcutEventHandler _backspaceInCollapsedSelection = (editorState) {
       // If the deletion crosses columns and starts from the beginning position
       // skip the node deletion process
       // otherwise it will cause an error in table rendering.
-      if (node.parent?.type == TableCellBlockKeys.type &&
-          position.offset == 0) {
+      if (node.parent?.type == TableCellBlockKeys.type && position.offset == 0) {
         return KeyEventResult.handled;
       }
 
-      Node? tableParent =
-          node.findParent((element) => element.type == TableBlockKeys.type);
+      Node? tableParent = node.findParent((element) => element.type == TableBlockKeys.type);
       Node? prevTableParent;
       final prev = node.previousNodeWhere((element) {
-        prevTableParent = element
-            .findParent((element) => element.type == TableBlockKeys.type);
+        prevTableParent = element.findParent((element) => element.type == TableBlockKeys.type);
         // break if only one is in a table or they're in different tables
         return tableParent != prevTableParent ||
             // merge with the previous node contains delta.
@@ -161,9 +155,7 @@ CommandShortcutEventHandler _backspaceInBlockSelection = (editorState) {
   }
   final transaction = editorState.transaction;
   transaction.deleteNodesAtPath(selection.start.path);
-  editorState
-      .apply(transaction)
-      .then((value) => editorState.selectionType = null);
+  editorState.apply(transaction).then((value) => editorState.selectionType = null);
 
   return KeyEventResult.handled;
 };
@@ -177,6 +169,14 @@ CommandShortcutEventHandler _backspaceInSelectAll = (editorState) {
   final transaction = editorState.transaction;
   final nodes = editorState.getNodesInSelection(selection);
   transaction.deleteNodes(nodes);
+
+  // Insert a new paragraph node to avoid locking the editor
+  transaction.insertNode(
+    editorState.document.root.children.first.path,
+    paragraphNode(),
+  );
+  transaction.afterSelection = Selection.collapsed(Position(path: [0]));
+
   editorState.apply(transaction);
 
   return KeyEventResult.handled;
