@@ -52,7 +52,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   factory Node.fromJson(Map<String, Object> json) {
     final node = Node(
       id: json['id'] as String? ?? Uuid().v4(),
-      databaseIndex: json['databaseIndex'] as int? ?? -1,
+      databaseIndex: json['databaseIndex'] != null ? (json['databaseIndex'] as num).toDouble() : -1,
       type: json['type'] as String,
       attributes: Attributes.from(json['data'] as Map? ?? {}),
       children: (json['children'] as List? ?? []).map((e) => Map<String, Object>.from(e)).map((e) => Node.fromJson(e)),
@@ -74,7 +74,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   /// In most cases, you don't need to modify it after the node is created.
   String id;
 
-  final int databaseIndex;
+  final double databaseIndex;
 
   // @Deprecated('Use type instead')
   // String get id => type;
@@ -241,6 +241,26 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final map = <String, Object>{
       'id': id,
       'databaseIndex': databaseIndex,
+      'type': type,
+    };
+    if (children.isNotEmpty) {
+      map['children'] = children
+          .map(
+            (node) => node.toJson(),
+          )
+          .toList(growable: false);
+    }
+    if (attributes.isNotEmpty) {
+      // filter the null value
+      map['data'] = attributes..removeWhere((_, value) => value == null);
+    }
+    return map;
+  }
+
+  Map<String, Object> toJsonIndexed({double? index}) {
+    final map = <String, Object>{
+      'id': id,
+      'databaseIndex': index ?? databaseIndex,
       'type': type,
     };
     if (children.isNotEmpty) {
