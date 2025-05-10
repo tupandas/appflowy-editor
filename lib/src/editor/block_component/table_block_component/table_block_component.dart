@@ -236,7 +236,8 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       ),
       child: Padding(
         key: tableKey,
-        padding: padding.add(const EdgeInsets.all(8)),
+        padding: editorState.editorStyle.inBlockPadding ??
+            padding.add(const EdgeInsets.all(8)),
         child: child,
       ),
     );

@@ -3,7 +3,6 @@ import 'package:appflowy_editor/src/editor/block_component/base_component/widget
 import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 class PageBlockKeys {
   static const String type = 'page';

@@ -203,7 +203,8 @@ class _ParagraphBlockComponentWidgetState
     // );
 
     child = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: editorState.editorStyle.seperatorPadding ??
+          const EdgeInsets.symmetric(vertical: 4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: withBackgroundColor
@@ -214,7 +215,8 @@ class _ParagraphBlockComponentWidgetState
         ),
         child: Padding(
           key: blockComponentKey,
-          padding: padding.add(const EdgeInsets.all(8)),
+          padding: editorState.editorStyle.inBlockPadding ??
+              padding.add(const EdgeInsets.all(24)),
           child: child,
         ),
       ),

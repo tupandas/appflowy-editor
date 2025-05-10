@@ -89,7 +89,7 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
         final selection = value?.normalized;
 
         if (selection == null) {
-          log('selection is null');
+          log('selection is null BLOCK HIGHLIGHT AREA');
           return sizedBox;
         }
 

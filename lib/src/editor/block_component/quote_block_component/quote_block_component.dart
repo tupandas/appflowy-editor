@@ -157,7 +157,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     );
 
     child = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: editorState.editorStyle.seperatorPadding ??
+          const EdgeInsets.symmetric(vertical: 4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: backgroundColor ??
@@ -166,7 +167,8 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         ),
         child: Padding(
           key: blockComponentKey,
-          padding: padding.add(const EdgeInsets.all(8)),
+          padding: editorState.editorStyle.inBlockPadding ??
+              padding.add(const EdgeInsets.all(8)),
           child: child,
         ),
       ),

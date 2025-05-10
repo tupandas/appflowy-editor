@@ -189,7 +189,7 @@ class _HeadingBlockComponentWidgetState
     );
 
     child = Padding(
-      padding: padding,
+      padding: editorState.editorStyle.inBlockPadding ?? padding,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: backgroundColor ??
@@ -197,7 +197,8 @@ class _HeadingBlockComponentWidgetState
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: editorState.editorStyle.inBlockPadding ??
+              const EdgeInsets.all(8.0),
           child: child,
         ),
       ),

@@ -155,6 +155,8 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
   EditorStyle customizeEditorStyle() {
     return EditorStyle(
       defaultNodeBackgroundColor: CupertinoColors.systemGrey6,
+      seperatorPadding: const EdgeInsets.symmetric(vertical: 10),
+      inBlockPadding: const EdgeInsets.symmetric(vertical: 10),
       padding: UniversalPlatform.isDesktopOrWeb
           ? const EdgeInsets.only(left: 200, right: 200)
           : const EdgeInsets.symmetric(horizontal: 20),

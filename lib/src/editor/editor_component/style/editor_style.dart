@@ -31,6 +31,8 @@ class EditorStyle extends Equatable {
     this.mobileDragHandleLeftExtend,
     this.mobileDragHandleHeightExtend,
     this.autoDismissCollapsedHandleDuration = const Duration(seconds: 3),
+    this.seperatorPadding,
+    this.inBlockPadding,
   });
 
   // The padding of the editor.
@@ -114,6 +116,10 @@ class EditorStyle extends Equatable {
 
   final double textScaleFactor;
 
+  final EdgeInsets? seperatorPadding;
+
+  final EdgeInsets? inBlockPadding;
+
   const EditorStyle.desktop({
     EdgeInsets? padding,
     Color? cursorColor,
@@ -127,6 +133,8 @@ class EditorStyle extends Equatable {
     this.cursorWidth = 2.0,
     this.textScaleFactor = 1.0,
     this.maxWidth,
+    this.seperatorPadding,
+    this.inBlockPadding,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 100),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         selectionColor =
@@ -175,6 +183,8 @@ class EditorStyle extends Equatable {
     this.mobileDragHandleLeftExtend,
     this.mobileDragHandleHeightExtend,
     this.autoDismissCollapsedHandleDuration = const Duration(seconds: 3),
+    this.seperatorPadding,
+    this.inBlockPadding,
   })  : padding = padding ?? const EdgeInsets.symmetric(horizontal: 20),
         cursorColor = cursorColor ?? const Color(0xFF00BCF0),
         dragHandleColor = dragHandleColor ?? const Color(0xFF00BCF0),
@@ -275,5 +285,6 @@ class EditorStyle extends Equatable {
         mobileDragHandleLeftExtend,
         mobileDragHandleHeightExtend,
         autoDismissCollapsedHandleDuration,
+        seperatorPadding,
       ];
 }
