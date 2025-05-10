@@ -224,6 +224,8 @@ class EditorStyle extends Equatable {
     double? mobileDragHandleLeftExtend,
     double? mobileDragHandleHeightExtend,
     Duration? autoDismissCollapsedHandleDuration,
+    EdgeInsets? seperatorPadding,
+    EdgeInsets? inBlockPadding,
   }) {
     return EditorStyle(
       padding: padding ?? this.padding,
@@ -259,6 +261,8 @@ class EditorStyle extends Equatable {
           mobileDragHandleHeightExtend ?? this.mobileDragHandleHeightExtend,
       autoDismissCollapsedHandleDuration: autoDismissCollapsedHandleDuration ??
           this.autoDismissCollapsedHandleDuration,
+      seperatorPadding: seperatorPadding ?? this.seperatorPadding,
+      inBlockPadding: inBlockPadding ?? this.inBlockPadding,
     );
   }
 
@@ -286,5 +290,6 @@ class EditorStyle extends Equatable {
         mobileDragHandleHeightExtend,
         autoDismissCollapsedHandleDuration,
         seperatorPadding,
+        inBlockPadding,
       ];
 }
