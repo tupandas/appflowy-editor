@@ -39,19 +39,15 @@ class _MobileEditorState extends State<MobileEditor> {
 
     editorState.highlightNotifier.addListener(() {
       final highlight = editorState.highlightNotifier.value;
-      log('HIGHLIGHT: $highlight');
 
       return;
 
       final visibleRange = editorScrollController.visibleRangeNotifier.value;
 
-      log('VISIBLE RANGE: $visibleRange');
-
       if (highlight != null) {
         final node = editorState.getNodesInSelection(highlight).lastOrNull;
 
-        final index =
-            node != null ? editorState.document.nodes.indexOf(node) : null;
+        final index = node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
             editorScrollController.itemScrollController.scrollTo(
@@ -61,7 +57,6 @@ class _MobileEditorState extends State<MobileEditor> {
             );
           }
         }
-        // log('NODE: $node');
       }
     });
 
@@ -70,22 +65,17 @@ class _MobileEditorState extends State<MobileEditor> {
         final textInserts = node.delta?.whereType<TextInsert>();
         final String? text = textInserts?.map((t) => t.text).join();
         await Future.delayed(const Duration(milliseconds: 1));
-        log('TEXT::::::: $text');
       }
     }();
 
     editorState.highlightNotifier.addListener(() {
-      Node;
       final highlight = editorState.highlightNotifier.value;
       final visibleRange = editorScrollController.visibleRangeNotifier.value;
-
-      log('VISIBLE RANGE: $visibleRange');
 
       if (highlight != null) {
         final node = editorState.getNodesInSelection(highlight).lastOrNull;
 
-        final index =
-            node != null ? editorState.document.nodes.indexOf(node) : null;
+        final index = node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
             editorScrollController.itemScrollController.scrollTo(
@@ -95,7 +85,6 @@ class _MobileEditorState extends State<MobileEditor> {
             );
           }
         }
-        // log('NODE: $node');
       }
     });
 
@@ -165,20 +154,11 @@ class _MobileEditorState extends State<MobileEditor> {
                     "delta": [
                       {
                         "insert": "AppFlowy Editor $index",
-                        "attributes": {
-                          "bold": true,
-                          "italic": false,
-                          "underline": false
-                        },
+                        "attributes": {"bold": true, "italic": false, "underline": false},
                       },
                       {
-                        "insert":
-                            " empowers your flutter app with seamless document editing features.",
-                        "attributes": {
-                          "bold": false,
-                          "italic": false,
-                          "underline": false
-                        },
+                        "insert": " empowers your flutter app with seamless document editing features.",
+                        "attributes": {"bold": false, "italic": false, "underline": false},
                       }
                     ],
                   },
@@ -274,9 +254,7 @@ class _MobileEditorState extends State<MobileEditor> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       magnifierSize: const Size(144, 96),
-      mobileDragHandleBallSize: UniversalPlatform.isIOS
-          ? const Size.square(12)
-          : const Size.square(8),
+      mobileDragHandleBallSize: UniversalPlatform.isIOS ? const Size.square(12) : const Size.square(8),
       mobileDragHandleLeftExtend: 12.0,
       mobileDragHandleWidthExtend: 24.0,
     );
