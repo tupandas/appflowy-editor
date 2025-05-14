@@ -65,7 +65,7 @@ class _MobileEditorState extends State<MobileEditor> {
     //     final textInserts = node.delta?.whereType<TextInsert>();
     //     final String? text = textInserts?.map((t) => t.text).join();
     //     await Future.delayed(const Duration(milliseconds: 1));
-    //     log('TEXT::::::: $text');
+
     //   }
     // }();
 
