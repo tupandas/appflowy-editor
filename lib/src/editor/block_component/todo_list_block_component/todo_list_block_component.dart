@@ -206,7 +206,8 @@ class _TodoListBlockComponentWidgetState
     );
 
     child = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: editorState.editorStyle.seperatorPadding ??
+          const EdgeInsets.symmetric(vertical: 2),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: withBackgroundColor
@@ -217,7 +218,8 @@ class _TodoListBlockComponentWidgetState
         ),
         child: Padding(
           key: blockComponentKey,
-          padding: padding.add(const EdgeInsets.all(8)),
+          padding: editorState.editorStyle.inBlockPadding ??
+              padding.add(const EdgeInsets.all(8)),
           child: child,
         ),
       ),

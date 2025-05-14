@@ -49,13 +49,17 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
   /// Parses a [Map] into a [Node]
   ///
-  factory Node.fromJson(Map<String, Object> json) {
+  factory Node.fromJson(Map<String, dynamic> json) {
     final node = Node(
       id: json['id'] as String? ?? Uuid().v4(),
-      databaseIndex: json['databaseIndex'] != null ? (json['databaseIndex'] as num).toDouble() : -1,
+      databaseIndex: json['databaseIndex'] != null
+          ? (json['databaseIndex'] as num).toDouble()
+          : -1,
       type: json['type'] as String,
       attributes: Attributes.from(json['data'] as Map? ?? {}),
-      children: (json['children'] as List? ?? []).map((e) => Map<String, Object>.from(e)).map((e) => Node.fromJson(e)),
+      children: (json['children'] as List? ?? [])
+          .map((e) => Map<String, Object>.from(e))
+          .map((e) => Node.fromJson(e)),
     );
 
     for (final child in node.children) {
@@ -150,7 +154,8 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     final length = _children.length;
     index ??= length;
 
-    AppFlowyEditorLog.editor.debug('insert Node $entry at path ${path + [index]}}');
+    AppFlowyEditorLog.editor
+        .debug('insert Node $entry at path ${path + [index]}}');
 
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
@@ -423,5 +428,8 @@ extension NodeEquality on Iterable<Node> {
 
   bool _nodeEquals<T, U>(T base, U other) =>
       identical(this, other) ||
-      base is Node && other is Node && other.type == base.type && other.children.equals(base.children);
+      base is Node &&
+          other is Node &&
+          other.type == base.type &&
+          other.children.equals(base.children);
 }

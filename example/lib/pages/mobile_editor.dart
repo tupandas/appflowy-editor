@@ -60,13 +60,14 @@ class _MobileEditorState extends State<MobileEditor> {
       }
     });
 
-    () async {
-      for (final node in editorState.document.nodes) {
-        final textInserts = node.delta?.whereType<TextInsert>();
-        final String? text = textInserts?.map((t) => t.text).join();
-        await Future.delayed(const Duration(milliseconds: 1));
-      }
-    }();
+    // () async {
+    //   for (final node in editorState.document.nodes) {
+    //     final textInserts = node.delta?.whereType<TextInsert>();
+    //     final String? text = textInserts?.map((t) => t.text).join();
+    //     await Future.delayed(const Duration(milliseconds: 1));
+    //     log('TEXT::::::: $text');
+    //   }
+    // }();
 
     editorState.highlightNotifier.addListener(() {
       final highlight = editorState.highlightNotifier.value;
@@ -114,34 +115,34 @@ class _MobileEditorState extends State<MobileEditor> {
       // resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          for (final node in editorState.document.nodes) {
-            final textInserts = node.delta?.whereType<TextInsert>();
-            final String? text = textInserts?.map((t) => t.text).join();
+          // for (final node in editorState.document.nodes) {
+          //   final textInserts = node.delta?.whereType<TextInsert>();
+          //   final String? text = textInserts?.map((t) => t.text).join();
 
-            editorState.updateHighlight(
-              Selection(
-                start: Position(offset: 0, path: node.path),
-                end: Position(offset: 500, path: node.path),
-              ),
-            );
+          //   editorState.updateHighlight(
+          //     Selection(
+          //       start: Position(offset: 0, path: node.path),
+          //       end: Position(offset: 500, path: node.path),
+          //     ),
+          //   );
 
-            await Future.delayed(const Duration(seconds: 1));
-          }
+          //   await Future.delayed(const Duration(seconds: 1));
+          // }
 
-          return;
+          // return;
 
-          int index = 0;
-          Timer.periodic(Duration(seconds: 1), (_) {
-            editorState.updateHighlight(
-              Selection(
-                start: Position(offset: 0, path: [index]),
-                end: Position(offset: 500, path: [index]),
-              ),
-            );
-            index++;
-          });
-          return;
-          print(editorState.document.last?.toJson());
+          // int index = 0;
+          // Timer.periodic(Duration(seconds: 1), (_) {
+          //   editorState.updateHighlight(
+          //     Selection(
+          //       start: Position(offset: 0, path: [index]),
+          //       end: Position(offset: 500, path: [index]),
+          //     ),
+          //   );
+          //   index++;
+          // });
+          // return;
+          // print(editorState.document.last?.toJson());
 
           editorState.document.insertNodesToEndOfDocument(
             List.generate(
@@ -172,6 +173,44 @@ class _MobileEditorState extends State<MobileEditor> {
               end: Position(offset: 10, path: [3]),
             ),
           );
+          // editorState.document.insertNodesToEndOfDocument(
+          //   List.generate(
+          //     10,
+          //     (index) => Node.fromJson(
+          //       {
+          //         "type": "paragraph",
+          //         "data": {
+          //           "level": 1,
+          //           "delta": [
+          //             {
+          //               "insert": "AppFlowy Editor $index",
+          //               "attributes": {
+          //                 "bold": true,
+          //                 "italic": false,
+          //                 "underline": false
+          //               },
+          //             },
+          //             {
+          //               "insert":
+          //                   " empowers your flutter app with seamless document editing features.",
+          //               "attributes": {
+          //                 "bold": false,
+          //                 "italic": false,
+          //                 "underline": false
+          //               },
+          //             }
+          //           ],
+          //         },
+          //       },
+          //     ),
+          //   ),
+          // );
+          // editorState.updateHighlight(
+          //   Selection(
+          //     start: Position(offset: 0, path: [3]),
+          //     end: Position(offset: 10, path: [3]),
+          //   ),
+          // );
         },
       ),
       body: MobileToolbarV2(
@@ -242,6 +281,9 @@ class _MobileEditorState extends State<MobileEditor> {
       dragHandleColor: const Color.fromARGB(255, 134, 46, 247),
       highlightColor: Colors.amber,
       defaultNodeBackgroundColor: CupertinoColors.systemGrey6,
+      seperatorPadding: const EdgeInsets.all(0),
+      inBlockPadding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       // selectionColor: const Color.fromARGB(50, 134, 46, 247),
       textStyleConfiguration: TextStyleConfiguration(
         text: GoogleFonts.poppins(
@@ -252,7 +294,6 @@ class _MobileEditorState extends State<MobileEditor> {
           backgroundColor: Colors.grey.shade200,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
       magnifierSize: const Size(144, 96),
       mobileDragHandleBallSize: UniversalPlatform.isIOS ? const Size.square(12) : const Size.square(8),
       mobileDragHandleLeftExtend: 12.0,
