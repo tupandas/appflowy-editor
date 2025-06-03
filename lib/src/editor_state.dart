@@ -354,9 +354,9 @@ class EditorState {
   void updateHighlight(
     Selection? highlight,
   ) {
-    if (highlight == null || highlight == this.highlight) {
-      return;
-    }
+    // if (highlight == null || highlight == this.highlight) {
+    //   return;
+    // }
 
     this.highlight = highlight;
   }
