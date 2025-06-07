@@ -29,9 +29,7 @@ class _MobileEditorState extends State<MobileEditor> {
   void initState() {
     super.initState();
 
-    editorScrollController = EditorScrollController(
-      editorState: editorState,
-    );
+    editorScrollController = EditorScrollController(editorState: editorState);
 
     editorState.highlightNotifier.addListener(() {
       final highlight = editorState.highlightNotifier.value;

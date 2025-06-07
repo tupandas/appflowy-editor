@@ -20,7 +20,6 @@ class EditorScrollController {
   EditorScrollController({required this.editorState}) {
     scrollController = ScrollController();
     observerController = SliverObserverController(controller: scrollController);
-
     resultMapSubject.listen(_listenItemPositions);
   }
 
@@ -54,7 +53,6 @@ class EditorScrollController {
   // dispose the subscription
   void dispose() {
     scrollController.dispose();
-    observerController.controller?.dispose();
     resultMapSubject.close();
     offsetNotifier.dispose();
     visibleRangeNotifier.dispose();
