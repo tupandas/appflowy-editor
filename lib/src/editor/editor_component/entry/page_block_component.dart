@@ -31,7 +31,7 @@ class PageBlockComponentBuilder extends BlockComponentBuilder {
   }
 }
 
-class PageBlockComponent extends BlockComponentStatelessWidget {
+class PageBlockComponent extends BlockComponentStatefulWidget {
   const PageBlockComponent({
     super.key,
     required super.node,
@@ -47,18 +47,19 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
   final Widget? footer;
 
   @override
+  State<PageBlockComponent> createState() => _PageBlockComponentState();
+}
+
+class _PageBlockComponentState extends State<PageBlockComponent> {
+  BuildContext? _sliverListContext;
+  late final editorState = context.read<EditorState>();
+  late final editorScrollController = context.read<EditorScrollController>();
+  late final observerController = editorScrollController.observerController;
+  late final scrollController = editorScrollController.scrollController;
+  late final items = widget.node.children;
+
+  @override
   Widget build(BuildContext context) {
-    BuildContext? _sliverListContext;
-    final editorState = context.read<EditorState>();
-    final editorScrollController = context.read<EditorScrollController>();
-    final observerController = editorScrollController.observerController;
-    final scrollController = editorScrollController.scrollController;
-    final items = node.children;
-
-    // int extentCount = 0;
-    // if (header != null) extentCount++;
-    // if (footer != null) extentCount++;
-
     return SliverViewObserver(
       controller: observerController,
       sliverContexts: () => [if (_sliverListContext != null) _sliverListContext!],
@@ -66,10 +67,10 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
       child: CustomScrollView(
         controller: scrollController,
         slivers: [
-          if (header != null)
+          if (widget.header != null)
             SliverToBoxAdapter(
               child: IgnoreEditorSelectionGesture(
-                child: header!,
+                child: widget.header!,
               ),
             ),
           SliverList.builder(
@@ -95,10 +96,10 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
               );
             },
           ),
-          if (footer != null)
+          if (widget.footer != null)
             SliverToBoxAdapter(
               child: IgnoreEditorSelectionGesture(
-                child: footer!,
+                child: widget.footer!,
               ),
             ),
         ],

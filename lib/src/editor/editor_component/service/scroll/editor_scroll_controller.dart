@@ -17,9 +17,7 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 /// If the shrinkWrap is true, the scrollController must not be null
 ///   and the editor should be wrapped in a SingleChildScrollView.
 class EditorScrollController {
-  EditorScrollController({
-    required this.editorState,
-  }) {
+  EditorScrollController({required this.editorState}) {
     scrollController = ScrollController();
     observerController = SliverObserverController(controller: scrollController);
 
@@ -51,15 +49,12 @@ class EditorScrollController {
   // notes: don't use them if shrinkWrap is false
   // ------------ start ----------------
   late final ScrollController scrollController;
-  bool shouldDisposeScrollController = false;
   // ------------ end ----------------
 
   // dispose the subscription
   void dispose() {
-    if (shouldDisposeScrollController) {
-      scrollController.dispose();
-    }
-
+    scrollController.dispose();
+    observerController.controller?.dispose();
     resultMapSubject.close();
     offsetNotifier.dispose();
     visibleRangeNotifier.dispose();
