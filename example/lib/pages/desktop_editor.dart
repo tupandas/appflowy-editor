@@ -31,10 +31,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
   void initState() {
     super.initState();
 
-    editorScrollController = EditorScrollController(
-      editorState: editorState,
-      shrinkWrap: false,
-    );
+    editorScrollController = EditorScrollController(editorState: editorState);
 
     editorStyle = _buildDesktopEditorStyle();
     blockComponentBuilders = _buildBlockComponentBuilders();
@@ -224,8 +221,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
     map.forEach((key, value) {
       value.configuration = value.configuration.copyWith(
         padding: (node) {
-          if (node.type == ColumnsBlockKeys.type ||
-              node.type == ColumnBlockKeys.type) {
+          if (node.type == ColumnsBlockKeys.type || node.type == ColumnBlockKeys.type) {
             return EdgeInsets.zero;
           }
           return const EdgeInsets.symmetric(vertical: 8.0);

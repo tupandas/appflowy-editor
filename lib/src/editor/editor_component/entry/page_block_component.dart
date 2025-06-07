@@ -1,8 +1,8 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/block_component/base_component/widget/ignore_parent_gesture.dart';
-import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 class PageBlockKeys {
   static const String type = 'page';
@@ -48,82 +48,61 @@ class PageBlockComponent extends BlockComponentStatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BuildContext? _sliverListContext;
     final editorState = context.read<EditorState>();
-    final scrollController = context.read<EditorScrollController?>();
+    final editorScrollController = context.read<EditorScrollController>();
+    final observerController = editorScrollController.observerController;
+    final scrollController = editorScrollController.scrollController;
     final items = node.children;
 
-    if (scrollController == null || scrollController.shrinkWrap) {
-      return SingleChildScrollView(
-        child: Builder(
-          builder: (context) {
-            final scroller = Scrollable.maybeOf(context);
-            if (scroller != null) {
-              editorState.updateAutoScroller(scroller);
-            }
-            return Column(
-              children: [
-                if (header != null) header!,
-                ...items.map(
-                  (e) => ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth:
-                          editorState.editorStyle.maxWidth ?? double.infinity,
-                    ),
-                    child: Padding(
-                      padding: editorState.editorStyle.padding,
-                      child: editorState.renderer.build(context, e),
+    // int extentCount = 0;
+    // if (header != null) extentCount++;
+    // if (footer != null) extentCount++;
+
+    return SliverViewObserver(
+      controller: observerController,
+      sliverContexts: () => [if (_sliverListContext != null) _sliverListContext!],
+      onObserveAll: (resultMap) => editorScrollController.resultMapSubject.add(resultMap),
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          if (header != null)
+            SliverToBoxAdapter(
+              child: IgnoreEditorSelectionGesture(
+                child: header!,
+              ),
+            ),
+          SliverList.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              _sliverListContext ??= context;
+
+              editorState.updateAutoScroller(Scrollable.of(context));
+
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: editorState.editorStyle.maxWidth ?? double.infinity,
+                  ),
+                  child: Padding(
+                    padding: editorState.editorStyle.padding,
+                    child: editorState.renderer.build(
+                      context,
+                      items[index],
                     ),
                   ),
                 ),
-                if (footer != null) footer!,
-              ],
-            );
-          },
-        ),
-      );
-    } else {
-      int extentCount = 0;
-      if (header != null) extentCount++;
-      if (footer != null) extentCount++;
-
-      return ScrollablePositionedList.builder(
-        shrinkWrap: scrollController.shrinkWrap,
-        scrollDirection: Axis.vertical,
-        itemCount: items.length + extentCount,
-        itemBuilder: (context, index) {
-          editorState.updateAutoScroller(Scrollable.of(context));
-          if (header != null && index == 0) {
-            return IgnoreEditorSelectionGesture(
-              child: header!,
-            );
-          }
-
-          if (footer != null && index == (items.length - 1) + extentCount) {
-            return IgnoreEditorSelectionGesture(
-              child: footer!,
-            );
-          }
-
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: editorState.editorStyle.maxWidth ?? double.infinity,
-              ),
-              child: Padding(
-                padding: editorState.editorStyle.padding,
-                child: editorState.renderer.build(
-                  context,
-                  items[index - (header != null ? 1 : 0)],
-                ),
+              );
+            },
+          ),
+          if (footer != null)
+            SliverToBoxAdapter(
+              child: IgnoreEditorSelectionGesture(
+                child: footer!,
               ),
             ),
-          );
-        },
-        itemScrollController: scrollController.itemScrollController,
-        scrollOffsetController: scrollController.scrollOffsetController,
-        itemPositionsListener: scrollController.itemPositionsListener,
-        scrollOffsetListener: scrollController.scrollOffsetListener,
-      );
-    }
+        ],
+      ),
+    );
   }
 }

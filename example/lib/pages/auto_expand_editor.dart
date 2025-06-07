@@ -41,10 +41,7 @@ class AutoExpandEditor extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 8),
                   ),
                   blockComponentBuilders: _buildBlockComponentBuilders(),
-                  editorScrollController: EditorScrollController(
-                    editorState: editorState,
-                    shrinkWrap: true,
-                  ),
+                  editorScrollController: EditorScrollController(editorState: editorState),
                 ),
               ),
             ),

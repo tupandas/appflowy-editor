@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:appflowy_editor/src/flutter/scrollable_positioned_list/src/item_positions_notifier.dart';
+
 import 'package:flutter/material.dart';
+import 'package:rxdart/subjects.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 /// This class controls the scroll behavior of the editor.
 ///
@@ -18,44 +19,18 @@ import 'package:flutter/material.dart';
 class EditorScrollController {
   EditorScrollController({
     required this.editorState,
-    this.shrinkWrap = false,
-    ScrollController? scrollController,
   }) {
-    // if shrinkWrap is true, we will render the document with Column layout.
-    // otherwise, we will render the document with ScrollablePositionedList.
-    if (shrinkWrap) {
-      void updateVisibleRange() {
-        visibleRangeNotifier.value = (
-          0,
-          editorState.document.root.children.length - 1,
-        );
-      }
+    scrollController = ScrollController();
+    observerController = SliverObserverController(controller: scrollController);
 
-      updateVisibleRange();
-      editorState.document.root.addListener(updateVisibleRange);
-
-      shouldDisposeScrollController = scrollController == null;
-      this.scrollController = scrollController ?? ScrollController();
-      // listen to the scroll offset
-      this.scrollController.addListener(
-            () => offsetNotifier.value = this.scrollController.offset,
-          );
-    } else {
-      // listen to the scroll offset
-      _scrollOffsetSubscription = _scrollOffsetListener.changes.listen((value) {
-        // the value from changes is the delta offset, so we add it to the current
-        // offset to get the total offset.
-        offsetNotifier.value = offsetNotifier.value + value;
-      });
-
-      _itemPositionsListener.itemPositions.addListener(_listenItemPositions);
-    }
+    resultMapSubject.listen(_listenItemPositions);
   }
 
-  final EditorState editorState;
-  final bool shrinkWrap;
+  final BehaviorSubject<Map<BuildContext, ObserveModel>> resultMapSubject = BehaviorSubject.seeded({});
 
-  // provide the current scroll offset
+  final EditorState editorState;
+  late SliverObserverController observerController;
+
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
 
   // provide the first level visible items, for example, if there're texts like this:
@@ -70,8 +45,7 @@ class EditorScrollController {
   // 10. text10
   //
   // So the visible range is (2-1, 9-1) = (1, 8), index start from 0.
-  final ValueNotifier<(int, int)> visibleRangeNotifier =
-      ValueNotifier((-1, -1));
+  final ValueNotifier<(int, int)> visibleRangeNotifier = ValueNotifier((-1, -1));
 
   // these value is required by SingleChildScrollView
   // notes: don't use them if shrinkWrap is false
@@ -80,77 +54,13 @@ class EditorScrollController {
   bool shouldDisposeScrollController = false;
   // ------------ end ----------------
 
-  // these values are required by ScrollablePositionedList
-  // notes: don't use them if shrinkWrap is true
-  // ------------ start ----------------
-  ItemScrollController get itemScrollController {
-    if (shrinkWrap) {
-      throw UnsupportedError(
-        'ItemScrollController is not supported '
-        'when shrinkWrap is true',
-      );
-    }
-    return _itemScrollController;
-  }
-
-  final ItemScrollController _itemScrollController = ItemScrollController();
-
-  ScrollOffsetController get scrollOffsetController {
-    if (shrinkWrap) {
-      throw UnsupportedError(
-        'ScrollOffsetController is not supported '
-        'when shrinkWrap is true',
-      );
-    }
-    return _scrollOffsetController;
-  }
-
-  final ScrollOffsetController _scrollOffsetController =
-      ScrollOffsetController();
-
-  ItemPositionsListener get itemPositionsListener {
-    if (shrinkWrap) {
-      throw UnsupportedError(
-        'ItemPositionsListener is not supported '
-        'when shrinkWrap is true',
-      );
-    }
-    return _itemPositionsListener;
-  }
-
-  final ItemPositionsListener _itemPositionsListener =
-      ItemPositionsListener.create();
-
-  ScrollOffsetListener get scrollOffsetListener {
-    if (shrinkWrap) {
-      throw UnsupportedError(
-        'ScrollOffsetListener is not supported '
-        'when shrinkWrap is true',
-      );
-    }
-    return _scrollOffsetListener;
-  }
-
-  final ScrollOffsetListener _scrollOffsetListener =
-      ScrollOffsetListener.create();
-  // ------------ end ----------------
-
-  late final StreamSubscription<double> _scrollOffsetSubscription;
-
   // dispose the subscription
   void dispose() {
     if (shouldDisposeScrollController) {
       scrollController.dispose();
     }
 
-    if (!shrinkWrap) {
-      _scrollOffsetSubscription.cancel();
-      _itemPositionsListener.itemPositions.removeListener(_listenItemPositions);
-      (_itemPositionsListener as ItemPositionsNotifier?)
-          ?.itemPositions
-          .dispose();
-    }
-
+    resultMapSubject.close();
     offsetNotifier.dispose();
     visibleRangeNotifier.dispose();
   }
@@ -160,114 +70,46 @@ class EditorScrollController {
     required Duration duration,
     Curve curve = Curves.linear,
   }) async {
-    if (shrinkWrap) {
-      await scrollController.animateTo(
-        offset.clamp(
-          scrollController.position.minScrollExtent,
-          scrollController.position.maxScrollExtent,
-        ),
-        duration: duration,
-        curve: curve,
-      );
-    } else {
-      await scrollOffsetController.animateTo(
-        offset: max(0, offset),
-        duration: duration,
-        curve: curve,
-      );
-    }
+    await scrollController.animateTo(
+      max(0, offset),
+      duration: duration,
+      curve: curve,
+    );
   }
 
   void jumpTo({
     required double offset,
   }) async {
-    if (shrinkWrap) {
-      if (scrollController.hasClients) {
-        scrollController.jumpTo(
-          offset.clamp(
-            scrollController.position.minScrollExtent,
-            scrollController.position.maxScrollExtent,
-          ),
-        );
-      }
-
-      return;
-    }
-
     final index = offset.toInt();
     final (start, end) = visibleRangeNotifier.value;
 
     if (index < start || index > end) {
-      itemScrollController.jumpTo(
+      observerController.jumpTo(
         index: max(0, index),
         alignment: 0,
       );
     }
   }
 
-  void jumpToTop() {
-    if (shrinkWrap) {
-      scrollController.jumpTo(0);
-    } else {
-      itemScrollController.jumpTo(index: 0);
-    }
-  }
+  void jumpToTop() => scrollController.jumpTo(0);
 
-  void jumpToBottom() {
-    if (shrinkWrap) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    } else {
-      itemScrollController.jumpTo(
-        index: editorState.document.root.children.length - 1,
-      );
-    }
-  }
+  void jumpToBottom() => scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
   // listen to the visible item positions
-  void _listenItemPositions() {
-    // the value from itemPositions is the list of item positions, we need to filter
-    //  the list to find the first and last visible items.
-    final positions = _itemPositionsListener.itemPositions.value;
-
-    if (positions.isEmpty) {
-      visibleRangeNotifier.value = (-1, -1);
-      return;
-    }
-
-    // Determine the first visible item by finding the item with the
-    // smallest trailing edge that is greater than 0.  i.e. the first
-    // item whose trailing edge in visible in the viewport.
-    int min = positions
-        .where((ItemPosition position) => position.itemTrailingEdge > 0)
-        .reduce(
-          (ItemPosition min, ItemPosition position) =>
-              position.itemTrailingEdge < min.itemTrailingEdge ? position : min,
-        )
-        .index;
-    // Determine the last visible item by finding the item with the
-    // greatest leading edge that is less than 1.  i.e. the last
-    // item whose leading edge in visible in the viewport.
-    int max = positions
-        .where((ItemPosition position) => position.itemLeadingEdge < 1)
-        .reduce(
-          (ItemPosition max, ItemPosition position) =>
-              position.itemLeadingEdge > max.itemLeadingEdge ? position : max,
-        )
-        .index;
-
-    // filter the header and footer
-    if (editorState.showHeader) {
-      max--;
-    }
-
-    if (editorState.showFooter &&
-        max >= editorState.document.root.children.length) {
-      max--;
-    }
-
+  void _listenItemPositions(Map<BuildContext, ObserveModel> resultMap) {
     // notify the listeners
+    final model = resultMap.values.firstOrNull;
+    if (model != null && model.visible && model is ListViewObserveModel) {
+      offsetNotifier.value = model.scrollOffset;
 
-    visibleRangeNotifier.value = (min, max);
+      final displayingChildIndexList = model.displayingChildIndexList;
+      if (displayingChildIndexList.isNotEmpty) {
+        visibleRangeNotifier.value = (displayingChildIndexList.first, displayingChildIndexList.last);
+      } else {
+        throw Exception('The displaying child index list is empty, this should not happen.');
+        visibleRangeNotifier.value = (-1, -1);
+      }
+    }
   }
 }
 

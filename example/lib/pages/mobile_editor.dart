@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +31,6 @@ class _MobileEditorState extends State<MobileEditor> {
 
     editorScrollController = EditorScrollController(
       editorState: editorState,
-      shrinkWrap: false,
     );
 
     editorState.highlightNotifier.addListener(() {
@@ -50,11 +46,11 @@ class _MobileEditorState extends State<MobileEditor> {
         final index = node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
-            editorScrollController.itemScrollController.scrollTo(
-              index: index + 1,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            // editorScrollController.itemScrollController.scrollTo(
+            //   index: index + 1,
+            //   duration: const Duration(milliseconds: 250),
+            //   curve: Curves.easeInOut,
+            // );
           }
         }
       }
@@ -79,11 +75,11 @@ class _MobileEditorState extends State<MobileEditor> {
         final index = node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
-            editorScrollController.itemScrollController.scrollTo(
-              index: index + 1,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            // editorScrollController.itemScrollController.scrollTo(
+            //   index: index + 1,
+            //   duration: const Duration(milliseconds: 250),
+            //   curve: Curves.easeInOut,
+            // );
           }
         }
       }
@@ -115,6 +111,12 @@ class _MobileEditorState extends State<MobileEditor> {
       // resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          editorScrollController.observerController.animateTo(
+            index: 110,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+
           // for (final node in editorState.document.nodes) {
           //   final textInserts = node.delta?.whereType<TextInsert>();
           //   final String? text = textInserts?.map((t) => t.text).join();
@@ -248,7 +250,7 @@ class _MobileEditorState extends State<MobileEditor> {
           },
           child: AppFlowyEditor(
             autoFocus: true,
-            editable: false,
+            editable: true,
 
             // disableSelectionService: true,
             // disableKeyboardService: true,

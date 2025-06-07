@@ -26,7 +26,6 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
 
   final editor = tester.editor..addParagraphs(3, initialText: text);
   await editor.startTesting();
-  final scrollController = ScrollController();
 
   final editorWithToolbar = FloatingToolbar(
     items: [
@@ -45,10 +44,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ],
     editorState: editor.editorState,
     textDirection: TextDirection.ltr,
-    editorScrollController: EditorScrollController(
-      editorState: editor.editorState,
-      scrollController: scrollController,
-    ),
+    editorScrollController: EditorScrollController(editorState: editor.editorState),
     child: AppFlowyEditor(editorState: editor.editorState),
   );
 
@@ -60,8 +56,7 @@ Future<void> _testLinkMenuInSingleTextSelection(WidgetTester tester) async {
     ),
   );
 
-  final selection =
-      Selection.single(path: [1], startOffset: 0, endOffset: text.length);
+  final selection = Selection.single(path: [1], startOffset: 0, endOffset: text.length);
   await editor.updateSelection(selection);
 
   // show toolbar

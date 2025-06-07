@@ -62,11 +62,7 @@ class TestableEditor {
       scrollController ??= ScrollController();
     }
 
-    final editorScrollController = EditorScrollController(
-      editorState: editorState,
-      shrinkWrap: shrinkWrap,
-      scrollController: scrollController,
-    );
+    final editorScrollController = EditorScrollController(editorState: editorState);
 
     Widget editor = Builder(
       builder: (context) {
@@ -78,8 +74,7 @@ class TestableEditor {
           editorScrollController: editorScrollController,
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,
-            ...TestableFindAndReplaceCommands(context: context)
-                .testableFindAndReplaceCommands,
+            ...TestableFindAndReplaceCommands(context: context).testableFindAndReplaceCommands,
           ],
           characterShortcutEvents: [
             ...standardCharacterShortcutEvents,
@@ -298,8 +293,7 @@ class MockIMEInput {
   final WidgetTester tester;
 
   TextInputService get imeInput {
-    final keyboardService = tester.state(find.byType(KeyboardServiceWidget))
-        as KeyboardServiceWidgetState;
+    final keyboardService = tester.state(find.byType(KeyboardServiceWidget)) as KeyboardServiceWidgetState;
     return keyboardService.textInputService;
   }
 
@@ -354,8 +348,7 @@ class MockIMEInput {
       return;
     }
 
-    final oldText =
-        editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
+    final oldText = editorState.getNodeAtPath(selection.start.path)!.delta!.toPlainText();
 
     await imeInput.apply([
       TextEditingDeltaReplacement(

@@ -70,7 +70,6 @@ class CustomToolbarItemColor extends StatelessWidget {
               editorState: editorState,
               editorScrollController: EditorScrollController(
                 editorState: editorState,
-                scrollController: scrollController,
               ),
               child: AppFlowyEditor(
                 editorState: editorState,

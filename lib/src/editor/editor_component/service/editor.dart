@@ -48,12 +48,9 @@ class AppFlowyEditor extends StatefulWidget {
     this.disableAutoScroll = false,
     this.autoScrollEdgeOffset = appFlowyEditorAutoScrollEdgeOffset,
     this.documentRules = const [],
-  })  : blockComponentBuilders =
-            blockComponentBuilders ?? standardBlockComponentBuilderMap,
-        characterShortcutEvents =
-            characterShortcutEvents ?? standardCharacterShortcutEvents,
-        commandShortcutEvents =
-            commandShortcutEvents ?? standardCommandShortcutEvents,
+  })  : blockComponentBuilders = blockComponentBuilders ?? standardBlockComponentBuilderMap,
+        characterShortcutEvents = characterShortcutEvents ?? standardCharacterShortcutEvents,
+        commandShortcutEvents = commandShortcutEvents ?? standardCommandShortcutEvents,
         contextMenuItems = contextMenuItems ?? standardContextMenuItems;
 
   final EditorState editorState;
@@ -246,11 +243,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   void initState() {
     super.initState();
 
-    editorScrollController = widget.editorScrollController ??
-        EditorScrollController(
-          editorState: editorState,
-          shrinkWrap: widget.shrinkWrap,
-        );
+    editorScrollController = widget.editorScrollController ?? EditorScrollController(editorState: editorState);
 
     _updateValues();
     editorState.renderer = _renderer;
@@ -285,7 +278,6 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       editorScrollController = widget.editorScrollController ??
           EditorScrollController(
             editorState: editorState,
-            shrinkWrap: widget.shrinkWrap,
           );
     }
 
@@ -335,8 +327,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       child = KeyboardServiceWidget(
         key: editorState.service.keyboardServiceKey,
         // disable all the shortcuts when the editor is not editable
-        characterShortcutEvents:
-            widget.editable ? widget.characterShortcutEvents : [],
+        characterShortcutEvents: widget.editable ? widget.characterShortcutEvents : [],
         // only allow copy and select all when the editor is not editable
         commandShortcutEvents: widget.commandShortcutEvents,
         focusNode: widget.focusNode,

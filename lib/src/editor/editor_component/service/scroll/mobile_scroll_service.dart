@@ -14,8 +14,7 @@ class MobileScrollService extends StatefulWidget {
   State<MobileScrollService> createState() => _MobileScrollServiceState();
 }
 
-class _MobileScrollServiceState extends State<MobileScrollService>
-    implements AppFlowyScrollService {
+class _MobileScrollServiceState extends State<MobileScrollService> implements AppFlowyScrollService {
   late final editorState = context.read<EditorState>();
   late final autoScroller = editorState.autoScroller;
   late final editorScrollController = context.read<EditorScrollController>();
@@ -30,12 +29,10 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   }
 
   @override
-  double get maxScrollExtent =>
-      editorState.scrollableState!.position.maxScrollExtent;
+  double get maxScrollExtent => editorState.scrollableState!.position.maxScrollExtent;
 
   @override
-  double get minScrollExtent =>
-      editorState.scrollableState!.position.minScrollExtent;
+  double get minScrollExtent => editorState.scrollableState!.position.minScrollExtent;
 
   @override
   int? get page {
@@ -54,23 +51,22 @@ class _MobileScrollServiceState extends State<MobileScrollService>
   @override
   void scrollTo(
     double dy, {
-    Duration duration = const Duration(
-      milliseconds: 150,
-    ),
+    Duration duration = const Duration(milliseconds: 150),
   }) {
     dy = dy.clamp(
       minScrollExtent,
       maxScrollExtent,
     );
-    editorScrollController.scrollOffsetController.animateScroll(
-      offset: dy,
+    editorScrollController.scrollController.animateTo(
+      dy,
       duration: duration,
+      curve: Curves.easeInOut,
     );
   }
 
   @override
   void jumpTo(int index) {
-    editorScrollController.itemScrollController.jumpTo(index: index);
+    editorScrollController.observerController.jumpTo(index: index);
   }
 
   @override
