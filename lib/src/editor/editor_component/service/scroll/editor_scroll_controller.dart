@@ -30,6 +30,14 @@ class EditorScrollController {
 
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
 
+  aa(int index) {
+    observerController.animateTo(
+      index: index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   // provide the first level visible items, for example, if there're texts like this:
   //
   // 1. text1
@@ -99,8 +107,8 @@ class EditorScrollController {
       if (displayingChildIndexList.isNotEmpty) {
         visibleRangeNotifier.value = (displayingChildIndexList.first, displayingChildIndexList.last);
       } else {
-        throw Exception('The displaying child index list is empty, this should not happen.');
         visibleRangeNotifier.value = (-1, -1);
+        throw Exception('The displaying child index list is empty, this should not happen.');
       }
     }
   }
