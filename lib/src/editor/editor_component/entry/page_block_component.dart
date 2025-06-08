@@ -64,6 +64,7 @@ class _PageBlockComponentState extends State<PageBlockComponent> {
       controller: observerController,
       sliverContexts: () => [if (_sliverListContext != null) _sliverListContext!],
       onObserveAll: (resultMap) => editorScrollController.resultMapSubject.add(resultMap),
+      triggerOnObserveType: ObserverTriggerOnObserveType.directly,
       child: CustomScrollView(
         controller: scrollController,
         slivers: [
