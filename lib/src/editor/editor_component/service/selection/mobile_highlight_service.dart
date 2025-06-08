@@ -158,6 +158,11 @@ class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWid
       context.read<EditorScrollController>(),
     );
 
+    if (sortedNodes.isEmpty) {
+      // TODO: ilk başta liste boş geliyor. boş gelmemeli
+      return null;
+    }
+
     return editorState.getNodeInOffset(
       sortedNodes,
       offset,
