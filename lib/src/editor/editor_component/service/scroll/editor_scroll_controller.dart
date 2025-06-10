@@ -25,12 +25,17 @@ class EditorScrollController {
 
   final BehaviorSubject<Map<BuildContext, ObserveModel>> resultMapSubject = BehaviorSubject.seeded({});
 
-  final EditorState editorState;
+  EditorState editorState;
   late SliverObserverController observerController;
-
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
 
+  void attachEditorState(EditorState editorState) {
+    this.editorState = editorState;
+  }
+
   aa(int index) {
+    final highlight = editorState.highlightRects();
+    print('highlightBATUHAN: $highlight');
     observerController.animateTo(
       index: index,
       duration: const Duration(milliseconds: 300),

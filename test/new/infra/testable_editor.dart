@@ -47,7 +47,6 @@ class TestableEditor {
     Locale locale = const Locale('en'),
     bool autoFocus = false,
     bool editable = true,
-    bool shrinkWrap = false,
     bool withFloatingToolbar = false,
     bool inMobile = false,
     ScrollController? scrollController,
@@ -70,7 +69,6 @@ class TestableEditor {
           editorState: editorState,
           editable: editable,
           autoFocus: autoFocus,
-          shrinkWrap: shrinkWrap,
           editorScrollController: editorScrollController,
           commandShortcutEvents: [
             ...standardCommandShortcutEvents,

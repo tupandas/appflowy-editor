@@ -59,7 +59,6 @@ class _EditorListState extends State<EditorList> {
                     IntrinsicHeight(
                       child: AppFlowyEditor(
                         editorState: editorState,
-                        shrinkWrap: true,
                         editable: false,
                       ),
                     ),
