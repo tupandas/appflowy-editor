@@ -97,7 +97,8 @@ class _HeadingBlockComponentWidgetState
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
         BlockComponentTextDirectionMixin,
-        BlockComponentAlignMixin {
+        BlockComponentAlignMixin,
+        IsNodeHighlightedMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -188,19 +189,22 @@ class _HeadingBlockComponentWidgetState
       child: child,
     );
 
-    child = Padding(
-      padding: editorState.editorStyle.inBlockPadding ?? padding,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: backgroundColor ??
-              editorState.editorStyle.defaultNodeBackgroundColor,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-        ),
-        child: Padding(
-          padding: editorState.editorStyle.inBlockPadding ??
-              const EdgeInsets.all(8.0),
-          child: child,
-        ),
+    child = AnimatedContainer(
+      margin: editorState.editorStyle.seperatorPadding ??
+          const EdgeInsets.symmetric(vertical: 2),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: isNodeHighlighted
+            ? editorState.editorStyle.highlightedNodeBackgroundColor
+            : backgroundColor ??
+                editorState.editorStyle.defaultNodeBackgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding:
+            editorState.editorStyle.inBlockPadding ?? const EdgeInsets.all(8.0),
+        child: child,
       ),
     );
 

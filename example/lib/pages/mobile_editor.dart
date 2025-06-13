@@ -47,7 +47,8 @@ class _MobileEditorState extends State<MobileEditor> {
       if (highlight != null) {
         final node = editorState.getNodesInSelection(highlight).lastOrNull;
 
-        final index = node != null ? editorState.document.nodes.indexOf(node) : null;
+        final index =
+            node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
             editorScrollController.itemScrollController.scrollTo(
@@ -76,7 +77,8 @@ class _MobileEditorState extends State<MobileEditor> {
       if (highlight != null) {
         final node = editorState.getNodesInSelection(highlight).lastOrNull;
 
-        final index = node != null ? editorState.document.nodes.indexOf(node) : null;
+        final index =
+            node != null ? editorState.document.nodes.indexOf(node) : null;
         if (index != null) {
           if (index < visibleRange.$1 || index > visibleRange.$2) {
             editorScrollController.itemScrollController.scrollTo(
@@ -155,11 +157,20 @@ class _MobileEditorState extends State<MobileEditor> {
                     "delta": [
                       {
                         "insert": "AppFlowy Editor $index",
-                        "attributes": {"bold": true, "italic": false, "underline": false},
+                        "attributes": {
+                          "bold": true,
+                          "italic": false,
+                          "underline": false
+                        },
                       },
                       {
-                        "insert": " empowers your flutter app with seamless document editing features.",
-                        "attributes": {"bold": false, "italic": false, "underline": false},
+                        "insert":
+                            " empowers your flutter app with seamless document editing features.",
+                        "attributes": {
+                          "bold": false,
+                          "italic": false,
+                          "underline": false
+                        },
                       }
                     ],
                   },
@@ -295,7 +306,9 @@ class _MobileEditorState extends State<MobileEditor> {
         ),
       ),
       magnifierSize: const Size(144, 96),
-      mobileDragHandleBallSize: UniversalPlatform.isIOS ? const Size.square(12) : const Size.square(8),
+      mobileDragHandleBallSize: UniversalPlatform.isIOS
+          ? const Size.square(12)
+          : const Size.square(8),
       mobileDragHandleLeftExtend: 12.0,
       mobileDragHandleWidthExtend: 24.0,
     );

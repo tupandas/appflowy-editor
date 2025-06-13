@@ -1,5 +1,6 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ParagraphBlockKeys {
   ParagraphBlockKeys._();
@@ -94,7 +95,8 @@ class _ParagraphBlockComponentWidgetState
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
         BlockComponentTextDirectionMixin,
-        BlockComponentAlignMixin {
+        BlockComponentAlignMixin,
+        IsNodeHighlightedMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -118,12 +120,14 @@ class _ParagraphBlockComponentWidgetState
   void initState() {
     super.initState();
     editorState.selectionNotifier.addListener(_onSelectionChange);
+
     _onSelectionChange();
   }
 
   @override
   void dispose() {
     editorState.selectionNotifier.removeListener(_onSelectionChange);
+
     super.dispose();
   }
 
@@ -187,38 +191,25 @@ class _ParagraphBlockComponentWidgetState
       ),
     );
 
-    // Padding(
-    //   padding: padding,
-    //   child: DecoratedBox(
-    //     decoration: BoxDecoration(
-    //       color: backgroundColor ??
-    //           editorState.editorStyle.defaultNodeBackgroundColor,
-    //       borderRadius: const BorderRadius.all(Radius.circular(8)),
-    //     ),
-    //     child: Padding(
-    //       padding: const EdgeInsets.all(8.0),
-    //       child: child,
-    //     ),
-    //   ),
-    // );
-
-    child = Padding(
-      padding: editorState.editorStyle.seperatorPadding ??
+    child = AnimatedContainer(
+      margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 4),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: withBackgroundColor
-              ? backgroundColor ??
-                  editorState.editorStyle.defaultNodeBackgroundColor
-              : null,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-        ),
-        child: Padding(
-          key: blockComponentKey,
-          padding: editorState.editorStyle.inBlockPadding ??
-              padding.add(const EdgeInsets.all(24)),
-          child: child,
-        ),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: isNodeHighlighted
+            ? editorState.editorStyle.highlightedNodeBackgroundColor
+            : (withBackgroundColor
+                ? backgroundColor ??
+                    editorState.editorStyle.defaultNodeBackgroundColor
+                : null),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        key: blockComponentKey,
+        padding: editorState.editorStyle.inBlockPadding ??
+            padding.add(const EdgeInsets.all(24)),
+        child: child,
       ),
     );
 
@@ -246,5 +237,49 @@ class _ParagraphBlockComponentWidgetState
     }
 
     return child;
+  }
+}
+
+mixin IsNodeHighlightedMixin<T extends BlockComponentStatefulWidget>
+    on
+        State<T>,
+        BlockComponentBackgroundColorMixin,
+        BlockComponentTextDirectionMixin {
+  bool isNodeHighlighted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final editorState = Provider.of<EditorState>(context, listen: false);
+    editorState.highlightedNodeIdNotifier
+        .addListener(_onHighlightedNodeIdChange);
+
+    isNodeHighlighted = editorState.highlightedNodeId == node.id;
+  }
+
+  void _onHighlightedNodeIdChange() {
+    final editorState = Provider.of<EditorState>(context, listen: false);
+
+    final highlightedNodeId = editorState.highlightedNodeId;
+    if (highlightedNodeId == node.id) {
+      if (!isNodeHighlighted) {
+        setState(() {
+          isNodeHighlighted = true;
+        });
+      }
+    } else {
+      if (isNodeHighlighted) {
+        setState(() {
+          isNodeHighlighted = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    editorState.highlightedNodeIdNotifier
+        .removeListener(_onHighlightedNodeIdChange);
+    super.dispose();
   }
 }

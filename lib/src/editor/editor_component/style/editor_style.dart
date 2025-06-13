@@ -15,6 +15,7 @@ class EditorStyle extends Equatable {
     required this.selectionColor,
     required this.highlightColor,
     required this.defaultNodeBackgroundColor,
+    required this.highlightedNodeBackgroundColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -60,6 +61,9 @@ class EditorStyle extends Equatable {
 
   // The background color of the node.
   final Color defaultNodeBackgroundColor;
+
+  // The background color of the highlighted node.
+  final Color highlightedNodeBackgroundColor;
 
   // Customize the text style of the editor.
   //
@@ -126,6 +130,7 @@ class EditorStyle extends Equatable {
     Color? selectionColor,
     Color? highlightColor,
     Color? defaultNodeBackgroundColor,
+    Color? highlightedNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -143,6 +148,8 @@ class EditorStyle extends Equatable {
             highlightColor ?? const Color.fromARGB(53, 209, 14, 154),
         defaultNodeBackgroundColor =
             defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
+        highlightedNodeBackgroundColor =
+            highlightedNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
             const TextStyleConfiguration(
               text: TextStyle(fontSize: 16, color: Colors.black),
@@ -167,6 +174,7 @@ class EditorStyle extends Equatable {
     Color? selectionColor,
     Color? highlightColor,
     Color? defaultNodeBackgroundColor,
+    Color? highlightedNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
@@ -194,6 +202,8 @@ class EditorStyle extends Equatable {
             highlightColor ?? const Color.fromARGB(53, 28, 164, 35),
         defaultNodeBackgroundColor =
             defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
+        highlightedNodeBackgroundColor =
+            highlightedNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
             const TextStyleConfiguration(
               text: TextStyle(fontSize: 16, color: Colors.black),
@@ -208,6 +218,7 @@ class EditorStyle extends Equatable {
     Color? selectionColor,
     Color? highlightColor,
     Color? defaultNodeBackgroundColor,
+    Color? highlightedNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder,
@@ -235,6 +246,8 @@ class EditorStyle extends Equatable {
       highlightColor: highlightColor ?? this.highlightColor,
       defaultNodeBackgroundColor:
           defaultNodeBackgroundColor ?? this.defaultNodeBackgroundColor,
+      highlightedNodeBackgroundColor:
+          highlightedNodeBackgroundColor ?? this.highlightedNodeBackgroundColor,
       textStyleConfiguration:
           textStyleConfiguration ?? this.textStyleConfiguration,
       textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
@@ -274,6 +287,7 @@ class EditorStyle extends Equatable {
         selectionColor,
         highlightColor,
         defaultNodeBackgroundColor,
+        highlightedNodeBackgroundColor,
         textStyleConfiguration,
         textSpanDecorator,
         textSpanOverlayBuilder,

@@ -229,6 +229,8 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       ),
     );
 
+    //TODO(oben): add isNodeHighlighted
+
     child = DecoratedBox(
       decoration: BoxDecoration(
         color: editorState.editorStyle.defaultNodeBackgroundColor,

@@ -104,6 +104,13 @@ class EditorState {
 
   final Document document;
 
+  final ValueNotifier<String?> highlightedNodeIdNotifier = ValueNotifier(null);
+  String? get highlightedNodeId => highlightedNodeIdNotifier.value;
+  void updateHighlightedNodeId(String? value) {
+    if (value == highlightedNodeId) return;
+    highlightedNodeIdNotifier.value = value;
+  }
+
   // the minimum duration for saving the history item.
   final Duration minHistoryItemDuration;
 
@@ -402,6 +409,7 @@ class EditorState {
     document.dispose();
     selectionNotifier.dispose();
     highlightNotifier.dispose();
+    highlightedNodeIdNotifier.dispose();
     _subscription?.cancel();
     _onScrollViewScrolledListeners.clear();
   }

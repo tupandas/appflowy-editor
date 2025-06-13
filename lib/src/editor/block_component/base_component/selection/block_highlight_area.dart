@@ -105,7 +105,8 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
               prevBlockRect == null) {
             return sizedBox;
           }
-          final builder = editorState.service.rendererService.blockComponentBuilder(widget.node.type);
+          final builder = editorState.service.rendererService
+              .blockComponentBuilder(widget.node.type);
           final padding = builder?.configuration.blockSelectionAreaMargin(
             widget.node,
           );
@@ -122,12 +123,15 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
         }
         // show the cursor when the selection is collapsed
         else if (selection.isCollapsed) {
-          if (!widget.supportTypes.contains(BlockSelectionType.cursor) || prevCursorRect == null) {
+          if (!widget.supportTypes.contains(BlockSelectionType.cursor) ||
+              prevCursorRect == null) {
             return sizedBox;
           }
           final editorState = context.read<EditorState>();
-          final dragMode = editorState.selectionExtraInfo?[selectionDragModeKey];
-          final shouldBlink = widget.delegate.shouldCursorBlink && dragMode != MobileSelectionDragMode.cursor;
+          final dragMode =
+              editorState.selectionExtraInfo?[selectionDragModeKey];
+          final shouldBlink = widget.delegate.shouldCursorBlink &&
+              dragMode != MobileSelectionDragMode.cursor;
 
           final cursor = Cursor(
             key: cursorKey,
@@ -144,13 +148,16 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
           if (!widget.supportTypes.contains(BlockSelectionType.selection) ||
               prevSelectionRects == null ||
               prevSelectionRects!.isEmpty ||
-              (prevSelectionRects!.length == 1 && prevSelectionRects!.first.width == 0)) {
+              (prevSelectionRects!.length == 1 &&
+                  prevSelectionRects!.first.width == 0)) {
             return sizedBox;
           }
 
-          return HighlightAreaPaint(
-            rects: prevSelectionRects ?? <Rect>[],
-            highlightColor: widget.highlightColor,
+          return RepaintBoundary(
+            child: HighlightAreaPaint(
+              rects: prevSelectionRects ?? <Rect>[],
+              highlightColor: widget.highlightColor,
+            ),
           );
         }
       }),
@@ -188,7 +195,8 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
             });
           }
         }
-      } else if (widget.supportTypes.contains(BlockSelectionType.cursor) && selection.isCollapsed) {
+      } else if (widget.supportTypes.contains(BlockSelectionType.cursor) &&
+          selection.isCollapsed) {
         final rect = widget.delegate.getCursorRectInPosition(selection.start);
         if (rect != prevCursorRect) {
           setState(() {
@@ -207,7 +215,9 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
           });
         }
       }
-    } else if (prevBlockRect != null || prevSelectionRects != null || prevCursorRect != null) {
+    } else if (prevBlockRect != null ||
+        prevSelectionRects != null ||
+        prevCursorRect != null) {
       setState(() {
         prevBlockRect = null;
         prevSelectionRects = null;
@@ -225,7 +235,7 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
   }
 }
 
-class HighlightAreaPaint extends StatelessWidget {
+class HighlightAreaPaint extends StatefulWidget {
   const HighlightAreaPaint({
     super.key,
     required this.rects,
@@ -236,12 +246,76 @@ class HighlightAreaPaint extends StatelessWidget {
   final Color highlightColor;
 
   @override
+  State<HighlightAreaPaint> createState() => _HighlightAreaPaintState();
+}
+
+class _HighlightAreaPaintState extends State<HighlightAreaPaint>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _progress;
+
+  late List<Rect> _oldRects;
+  late List<Rect> _newRects;
+
+  @override
+  void initState() {
+    super.initState();
+    _oldRects = widget.rects;
+    _newRects = widget.rects;
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant HighlightAreaPaint oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!const DeepCollectionEquality().equals(widget.rects, oldWidget.rects)) {
+      _oldRects = oldWidget.rects;
+      _newRects = widget.rects;
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  List<Rect> _interpolateRects(double t) {
+    final result = <Rect>[];
+
+    for (int i = 0; i < _newRects.length; i++) {
+      final newRect = _newRects[i];
+      final oldRect = (i < _oldRects.length) ? _oldRects[i] : newRect;
+
+      final interpolated = Rect.lerp(oldRect, newRect, t)!;
+      result.add(interpolated);
+    }
+
+    return result;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _HighlightAreaPainter(
-        rects: rects,
-        selectionColor: highlightColor,
-      ),
+    return AnimatedBuilder(
+      animation: _progress,
+      builder: (context, child) {
+        final currentRects = _interpolateRects(_progress.value);
+        return CustomPaint(
+          painter: _HighlightAreaPainter(
+            rects: currentRects,
+            selectionColor: widget.highlightColor,
+          ),
+        );
+      },
     );
   }
 }
@@ -275,13 +349,21 @@ class _HighlightAreaPainter extends CustomPainter {
       final nextRow = i < rows.length - 1 ? rows[i + 1] : null;
 
       // Köşe radiuslarını belirle
-      final topLeftRadius = previousRow == null || firstBox.left < previousRow.first.left ? 4.0 : 0.0;
+      final topLeftRadius =
+          previousRow == null || firstBox.left < previousRow.first.left
+              ? 4.0
+              : 0.0;
 
-      final topRightRadius = previousRow == null || lastBox.right > previousRow.last.right ? 4.0 : 0.0;
+      final topRightRadius =
+          previousRow == null || lastBox.right > previousRow.last.right
+              ? 4.0
+              : 0.0;
 
-      final bottomLeftRadius = nextRow == null || firstBox.left < nextRow.first.left ? 4.0 : 0.0;
+      final bottomLeftRadius =
+          nextRow == null || firstBox.left < nextRow.first.left ? 4.0 : 0.0;
 
-      final bottomRightRadius = nextRow == null || lastBox.right > nextRow.last.right ? 4.0 : 0.0;
+      final bottomRightRadius =
+          nextRow == null || lastBox.right > nextRow.last.right ? 4.0 : 0.0;
 
       // Son satır için alt kısmına 4px ekle
       final bottom = nextRow == null ? lastBox.bottom + 4 : lastBox.bottom;
@@ -295,10 +377,17 @@ class _HighlightAreaPainter extends CustomPainter {
       path.addRRect(
         RRect.fromRectAndCorners(
           rect,
-          topLeft: topLeftRadius > 0 ? Radius.circular(topLeftRadius) : Radius.zero,
-          topRight: topRightRadius > 0 ? Radius.circular(topRightRadius) : Radius.zero,
-          bottomLeft: bottomLeftRadius > 0 ? Radius.circular(bottomLeftRadius) : Radius.zero,
-          bottomRight: bottomRightRadius > 0 ? Radius.circular(bottomRightRadius) : Radius.zero,
+          topLeft:
+              topLeftRadius > 0 ? Radius.circular(topLeftRadius) : Radius.zero,
+          topRight: topRightRadius > 0
+              ? Radius.circular(topRightRadius)
+              : Radius.zero,
+          bottomLeft: bottomLeftRadius > 0
+              ? Radius.circular(bottomLeftRadius)
+              : Radius.zero,
+          bottomRight: bottomRightRadius > 0
+              ? Radius.circular(bottomRightRadius)
+              : Radius.zero,
         ),
       );
     }

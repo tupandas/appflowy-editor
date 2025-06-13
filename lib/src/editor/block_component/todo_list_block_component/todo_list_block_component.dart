@@ -120,7 +120,8 @@ class _TodoListBlockComponentWidgetState
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
         BlockComponentTextDirectionMixin,
-        BlockComponentAlignMixin {
+        BlockComponentAlignMixin,
+        IsNodeHighlightedMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -205,23 +206,25 @@ class _TodoListBlockComponentWidgetState
       ),
     );
 
-    child = Padding(
-      padding: editorState.editorStyle.seperatorPadding ??
+    child = AnimatedContainer(
+      margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 2),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: withBackgroundColor
-              ? backgroundColor ??
-                  editorState.editorStyle.defaultNodeBackgroundColor
-              : null,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-        ),
-        child: Padding(
-          key: blockComponentKey,
-          padding: editorState.editorStyle.inBlockPadding ??
-              padding.add(const EdgeInsets.all(8)),
-          child: child,
-        ),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: isNodeHighlighted
+            ? editorState.editorStyle.highlightedNodeBackgroundColor
+            : withBackgroundColor
+                ? backgroundColor ??
+                    editorState.editorStyle.defaultNodeBackgroundColor
+                : null,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        key: blockComponentKey,
+        padding: editorState.editorStyle.inBlockPadding ??
+            padding.add(const EdgeInsets.all(8)),
+        child: child,
       ),
     );
 

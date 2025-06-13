@@ -75,12 +75,10 @@ class Selection {
   bool get isSingle => start.path.equals(end.path);
 
   /// Returns a Boolean indicating whether the selection is forward.
-  bool get isForward =>
-      (start.path > end.path) || (isSingle && start.offset > end.offset);
+  bool get isForward => (start.path > end.path) || (isSingle && start.offset > end.offset);
 
   /// Returns a Boolean indicating whether the selection is backward.
-  bool get isBackward =>
-      (start.path < end.path) || (isSingle && start.offset < end.offset);
+  bool get isBackward => (start.path < end.path) || (isSingle && start.offset < end.offset);
 
   /// Returns a normalized selection that direction is forward.
   Selection get normalized => isBackward ? copyWith() : reversed.copyWith();
