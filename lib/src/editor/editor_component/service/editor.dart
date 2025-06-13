@@ -32,7 +32,6 @@ class AppFlowyEditor extends StatefulWidget {
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
-    this.shrinkWrap = false,
     this.showMagnifier = true,
     this.editorScrollController,
     this.editorStyle = const EditorStyle.desktop(),
@@ -164,13 +163,6 @@ class AppFlowyEditor extends StatefulWidget {
   /// You can provide a header and/or a footer to the editor.
   final Widget? header;
   final Widget? footer;
-
-  /// if true, the editor will be sized to its contents.
-  ///
-  /// You should wrap the editor with a sized widget if you set this value to true.
-  ///
-  /// Notes: Must provide a scrollController when shrinkWrap is true.
-  final bool shrinkWrap;
 
   /// Show the magnifier or not.
   ///

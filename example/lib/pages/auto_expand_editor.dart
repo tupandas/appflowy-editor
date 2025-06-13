@@ -35,7 +35,6 @@ class AutoExpandEditor extends StatelessWidget {
               child: IntrinsicHeight(
                 child: AppFlowyEditor(
                   editorState: editorState,
-                  shrinkWrap: true,
                   autoScrollEdgeOffset: 24,
                   editorStyle: const EditorStyle.desktop(
                     padding: EdgeInsets.symmetric(horizontal: 8),

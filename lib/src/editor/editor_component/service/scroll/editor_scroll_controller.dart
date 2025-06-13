@@ -25,10 +25,23 @@ class EditorScrollController {
 
   final BehaviorSubject<Map<BuildContext, ObserveModel>> resultMapSubject = BehaviorSubject.seeded({});
 
-  final EditorState editorState;
+  EditorState editorState;
   late SliverObserverController observerController;
-
   final ValueNotifier<double> offsetNotifier = ValueNotifier(0);
+
+  void attachEditorState(EditorState editorState) {
+    this.editorState = editorState;
+  }
+
+  aa(int index) {
+    final highlight = editorState.highlightRects();
+    print('highlightBATUHAN: $highlight');
+    observerController.animateTo(
+      index: index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   // provide the first level visible items, for example, if there're texts like this:
   //
@@ -99,8 +112,8 @@ class EditorScrollController {
       if (displayingChildIndexList.isNotEmpty) {
         visibleRangeNotifier.value = (displayingChildIndexList.first, displayingChildIndexList.last);
       } else {
-        throw Exception('The displaying child index list is empty, this should not happen.');
         visibleRangeNotifier.value = (-1, -1);
+        throw Exception('The displaying child index list is empty, this should not happen.');
       }
     }
   }

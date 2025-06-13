@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
@@ -157,6 +156,11 @@ class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWid
     final List<Node> sortedNodes = editorState.getVisibleNodes(
       context.read<EditorScrollController>(),
     );
+
+    if (sortedNodes.isEmpty) {
+      // TODO: ilk başta liste boş geliyor. boş gelmemeli
+      return null;
+    }
 
     return editorState.getNodeInOffset(
       sortedNodes,
