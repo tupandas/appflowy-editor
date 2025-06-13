@@ -116,9 +116,6 @@ extension EditorStateSelection on EditorState {
         max = mid - 1;
       }
     }
-    if (min <= 0) {
-      return 0;
-    }
 
     return min.clamp(start, end);
   }
