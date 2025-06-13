@@ -52,8 +52,7 @@ extension EditorStateSelection on EditorState {
       compare: (index, rect) => rect.bottom <= offset.dy,
     );
 
-    final filteredNodes = List.of(sortedNodes)
-      ..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
+    final filteredNodes = List.of(sortedNodes)..retainWhere((n) => n.rect.bottom == sortedNodes[min].rect.bottom);
     min = 0;
     if (filteredNodes.length > 1) {
       min = _findCloseNode(
@@ -116,6 +115,9 @@ extension EditorStateSelection on EditorState {
       } else {
         max = mid - 1;
       }
+    }
+    if (min <= 0) {
+      return 0;
     }
 
     return min.clamp(start, end);
