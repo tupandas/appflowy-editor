@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/selection/mobile_selection_service.dart';
@@ -20,10 +19,12 @@ class MobileHighlightServiceWidget extends StatefulWidget {
   final Color highlightColor;
 
   @override
-  State<MobileHighlightServiceWidget> createState() => _MobileHighlightServiceWidgetState();
+  State<MobileHighlightServiceWidget> createState() =>
+      _MobileHighlightServiceWidgetState();
 }
 
-class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWidget>
+class _MobileHighlightServiceWidgetState
+    extends State<MobileHighlightServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
   //*
@@ -42,7 +43,8 @@ class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWid
   // the selection from editorState will be updated directly, but the cursor
   // or selection area depends on the layout of the text, so we need to update
   // the selection after the layout.
-  final PropertyValueNotifier<Selection?> selectionNotifierAfterLayout = PropertyValueNotifier<Selection?>(null);
+  final PropertyValueNotifier<Selection?> selectionNotifierAfterLayout =
+      PropertyValueNotifier<Selection?>(null);
 
   /// Pan
   Offset? _panStartOffset;
@@ -238,15 +240,21 @@ class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWid
     }
 
     // only support selection mode now.
-    if (editorState.selection == null || dragMode == MobileSelectionDragMode.none) {
+    if (editorState.selection == null ||
+        dragMode == MobileSelectionDragMode.none) {
       return null;
     }
 
     final panEndOffset = details.globalPosition;
 
     final dy = editorState.service.scrollService?.dy;
-    final panStartOffset = dy == null ? _panStartOffset! : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-    final end = getNodeInOffset(panEndOffset)?.selectable?.getSelectionInRange(panStartOffset, panEndOffset).end;
+    final panStartOffset = dy == null
+        ? _panStartOffset!
+        : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
+    final end = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getSelectionInRange(panStartOffset, panEndOffset)
+        .end;
 
     Selection? newSelection;
 
@@ -302,11 +310,13 @@ class _MobileHighlightServiceWidgetState extends State<MobileHighlightServiceWid
 
     currentSelectedNodes = nodes;
 
-    final backwardNodes = selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
+    final backwardNodes =
+        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
-    AppFlowyEditorLog.selection.debug('update selection areas, $normalizedSelection');
+    AppFlowyEditorLog.selection
+        .debug('update selection areas, $normalizedSelection');
 
     for (var i = 0; i < backwardNodes.length; i++) {
       final node = backwardNodes[i];

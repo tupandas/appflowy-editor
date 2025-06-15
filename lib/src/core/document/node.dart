@@ -45,7 +45,13 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     for (final child in children) {
       child.parent = this;
     }
+
+    if (sectionParser != null && text != null) {
+      sections = sectionParser!(this);
+    }
   }
+
+  static List<Section>? Function(Node node)? sectionParser;
 
   /// Parses a [Map] into a [Node]
   ///
@@ -68,6 +74,21 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
 
     return node;
   }
+
+  String? get text {
+    final textInserts = delta?.whereType<TextInsert>();
+    final text = textInserts?.map((t) => t.text).join();
+
+    if (text != null && text.isEmpty) {
+      return null;
+    }
+
+    return text;
+  }
+
+  int? get sectionCount => sections?.length;
+
+  List<Section>? sections;
 
   /// The type of the node.
   final String type;

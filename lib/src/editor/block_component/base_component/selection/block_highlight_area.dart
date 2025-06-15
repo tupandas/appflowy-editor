@@ -60,6 +60,11 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
   // keep the previous selection rects to avoid unnecessary rebuild
   List<Rect>? prevSelectionRects;
   // keep the block selection rect to avoid unnecessary rebuild
+
+  // keep the previous section rects to avoid unnecessary rebuild
+  Selection? prevSection;
+  List<Rect>? sectionRects;
+
   Rect? prevBlockRect;
 
   @override
@@ -153,11 +158,21 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
             return sizedBox;
           }
 
-          return RepaintBoundary(
-            child: HighlightAreaPaint(
-              rects: prevSelectionRects ?? <Rect>[],
-              highlightColor: widget.highlightColor,
-            ),
+          return Stack(
+            children: [
+              RepaintBoundary(
+                child: HighlightAreaPaint(
+                  rects: sectionRects ?? <Rect>[],
+                  highlightColor: widget.highlightColor.withValues(alpha: 0.2),
+                ),
+              ),
+              RepaintBoundary(
+                child: HighlightAreaPaint(
+                  rects: prevSelectionRects ?? <Rect>[],
+                  highlightColor: widget.highlightColor,
+                ),
+              ),
+            ],
           );
         }
       }),
@@ -206,6 +221,27 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
           });
         }
       } else if (widget.supportTypes.contains(BlockSelectionType.selection)) {
+        final mid = (selection.start.offset + selection.end.offset) ~/ 2;
+        final currentSection = widget.node.sections?.firstWhereOrNull(
+          (section) => section.selection.end.offset >= mid,
+        );
+
+        final selectionWithouthPath = currentSection?.selection;
+
+        if (selectionWithouthPath != null &&
+            prevSection != selectionWithouthPath) {
+          final selectionWithPath = selectionWithouthPath.copyWith(
+            start: selectionWithouthPath.start.copyWith(path: widget.node.path),
+            end: selectionWithouthPath.end.copyWith(path: widget.node.path),
+          );
+          final currentSectionRects =
+              widget.delegate.getRectsInSelection(selectionWithPath);
+          prevSection = selectionWithouthPath;
+          setState(() {
+            sectionRects = currentSectionRects;
+          });
+        }
+
         final rects = widget.delegate.getRectsInSelection(selection);
         if (!_deepEqual(rects, prevSelectionRects)) {
           setState(() {
@@ -240,10 +276,14 @@ class HighlightAreaPaint extends StatefulWidget {
     super.key,
     required this.rects,
     required this.highlightColor,
+    this.delay,
+    this.padding,
   });
 
   final List<Rect> rects;
   final Color highlightColor;
+  final Duration? delay;
+  final int? padding;
 
   @override
   State<HighlightAreaPaint> createState() => _HighlightAreaPaintState();
@@ -257,6 +297,16 @@ class _HighlightAreaPaintState extends State<HighlightAreaPaint>
   late List<Rect> _oldRects;
   late List<Rect> _newRects;
 
+  void _forward() {
+    if (widget.delay != null) {
+      Future.delayed(widget.delay!, () {
+        _controller.forward();
+      });
+    } else {
+      _controller.forward();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -268,7 +318,7 @@ class _HighlightAreaPaintState extends State<HighlightAreaPaint>
       duration: const Duration(milliseconds: 150),
     );
     _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _controller.forward();
+    _forward();
   }
 
   @override
@@ -279,7 +329,7 @@ class _HighlightAreaPaintState extends State<HighlightAreaPaint>
       _oldRects = oldWidget.rects;
       _newRects = widget.rects;
       _controller.reset();
-      _controller.forward();
+      _forward();
     }
   }
 
