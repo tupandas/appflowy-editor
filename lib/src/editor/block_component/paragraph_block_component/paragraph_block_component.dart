@@ -1,6 +1,5 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ParagraphBlockKeys {
   ParagraphBlockKeys._();
@@ -95,8 +94,7 @@ class _ParagraphBlockComponentWidgetState
         BlockComponentBackgroundColorMixin,
         NestedBlockComponentStatefulWidgetMixin,
         BlockComponentTextDirectionMixin,
-        BlockComponentAlignMixin,
-        IsNodeHighlightedMixin {
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -191,18 +189,14 @@ class _ParagraphBlockComponentWidgetState
       ),
     );
 
-    child = AnimatedContainer(
+    child = Container(
       margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 4),
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color: isNodeHighlighted
-            ? editorState.editorStyle.highlightedNodeBackgroundColor
-            : (withBackgroundColor
-                ? backgroundColor ??
-                    editorState.editorStyle.defaultNodeBackgroundColor
-                : null),
+        color: (withBackgroundColor
+            ? backgroundColor ??
+                editorState.editorStyle.defaultNodeBackgroundColor
+            : null),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: Padding(
@@ -240,46 +234,46 @@ class _ParagraphBlockComponentWidgetState
   }
 }
 
-mixin IsNodeHighlightedMixin<T extends BlockComponentStatefulWidget>
-    on
-        State<T>,
-        BlockComponentBackgroundColorMixin,
-        BlockComponentTextDirectionMixin {
-  bool isNodeHighlighted = false;
+// mixin IsNodeHighlightedMixin<T extends BlockComponentStatefulWidget>
+//     on
+//         State<T>,
+//         BlockComponentBackgroundColorMixin,
+//         BlockComponentTextDirectionMixin {
+//   bool isNodeHighlighted = false;
 
-  @override
-  void initState() {
-    super.initState();
-    final editorState = Provider.of<EditorState>(context, listen: false);
-    editorState.highlightedNodeIdNotifier
-        .addListener(_onHighlightedNodeIdChange);
+//   @override
+//   void initState() {
+//     super.initState();
+//     final editorState = Provider.of<EditorState>(context, listen: false);
+//     editorState.highlightedNodeIdNotifier
+//         .addListener(_onHighlightedNodeIdChange);
 
-    isNodeHighlighted = editorState.highlightedNodeId == node.id;
-  }
+//     isNodeHighlighted = editorState.highlightedNodeId == node.id;
+//   }
 
-  void _onHighlightedNodeIdChange() {
-    final editorState = Provider.of<EditorState>(context, listen: false);
+//   void _onHighlightedNodeIdChange() {
+//     final editorState = Provider.of<EditorState>(context, listen: false);
 
-    final highlightedNodeId = editorState.highlightedNodeId;
-    if (highlightedNodeId == node.id) {
-      if (!isNodeHighlighted) {
-        setState(() {
-          isNodeHighlighted = true;
-        });
-      }
-    } else {
-      if (isNodeHighlighted) {
-        setState(() {
-          isNodeHighlighted = false;
-        });
-      }
-    }
-  }
+//     final highlightedNodeId = editorState.highlightedNodeId;
+//     if (highlightedNodeId == node.id) {
+//       if (!isNodeHighlighted) {
+//         setState(() {
+//           isNodeHighlighted = true;
+//         });
+//       }
+//     } else {
+//       if (isNodeHighlighted) {
+//         setState(() {
+//           isNodeHighlighted = false;
+//         });
+//       }
+//     }
+//   }
 
-  @override
-  void dispose() {
-    editorState.highlightedNodeIdNotifier
-        .removeListener(_onHighlightedNodeIdChange);
-    super.dispose();
-  }
-}
+//   @override
+//   void dispose() {
+//     editorState.highlightedNodeIdNotifier
+//         .removeListener(_onHighlightedNodeIdChange);
+//     super.dispose();
+//   }
+// }

@@ -89,8 +89,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
         BlockComponentConfigurable,
         BlockComponentBackgroundColorMixin,
         BlockComponentTextDirectionMixin,
-        BlockComponentAlignMixin,
-        IsNodeHighlightedMixin {
+        BlockComponentAlignMixin {
   @override
   final forwardKey = GlobalKey(debugLabel: 'flowy_rich_text');
 
@@ -157,16 +156,12 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
       ),
     );
 
-    child = AnimatedContainer(
+    child = Container(
       margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 2),
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color: isNodeHighlighted
-            ? editorState.editorStyle.highlightedNodeBackgroundColor
-            : backgroundColor ??
-                editorState.editorStyle.defaultNodeBackgroundColor,
+        color: backgroundColor ??
+            editorState.editorStyle.defaultNodeBackgroundColor,
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: Padding(
