@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/desktop_editor.dart';
 import 'package:example/pages/mobile_editor.dart';
@@ -83,7 +81,8 @@ class _EditorState extends State<Editor> {
           child: FutureBuilder<String>(
             future: widget.jsonString,
             builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.done) {
                 if (!isInitialized || editorState == null) {
                   isInitialized = true;
                   EditorState editorState = EditorState(
@@ -429,7 +428,9 @@ reading the note.
 
 
 """,
-                      inlineSyntaxes: [...md.ExtensionSet.commonMark.inlineSyntaxes],
+                      inlineSyntaxes: [
+                        ...md.ExtensionSet.commonMark.inlineSyntaxes
+                      ],
                     ),
                   );
 
@@ -472,7 +473,9 @@ reading the note.
               color: Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(8),
-                bottomLeft: UniversalPlatform.isMobile ? const Radius.circular(8) : Radius.zero,
+                bottomLeft: UniversalPlatform.isMobile
+                    ? const Radius.circular(8)
+                    : Radius.zero,
               ),
             ),
             child: Column(
