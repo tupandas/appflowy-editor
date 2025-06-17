@@ -652,6 +652,72 @@ class EditorState {
     return rects;
   }
 
+  List<Rect> highlightRects() {
+    final highlight = this.highlight;
+    if (highlight == null) {
+      return [];
+    }
+
+    final nodes = getNodesInSelection(highlight);
+    final rects = <Rect>[];
+
+    if (highlight.isCollapsed && nodes.length == 1) {
+      final selectable = nodes.first.selectable;
+      if (selectable != null) {
+        final rect = selectable.getCursorRectInPosition(
+          highlight.end,
+          shiftWithBaseOffset: true,
+        );
+        if (rect != null) {
+          rects.add(
+            selectable.transformRectToGlobal(
+              rect,
+              shiftWithBaseOffset: true,
+            ),
+          );
+        }
+      }
+    } else {
+      for (final node in nodes) {
+        final selectable = node.selectable;
+        if (selectable == null) {
+          continue;
+        }
+        final nodeRects = selectable.getRectsInSelection(
+          highlight,
+          shiftWithBaseOffset: true,
+        );
+        if (nodeRects.isEmpty) {
+          continue;
+        }
+        final renderBox = node.renderBox;
+        if (renderBox == null) {
+          continue;
+        }
+        for (final rect in nodeRects) {
+          final globalOffset = renderBox.localToGlobal(rect.topLeft);
+          rects.add(globalOffset & rect.size);
+        }
+      }
+    }
+
+    return rects;
+  }
+
+  void scrollToHighlight(EditorScrollController editorScrollController) {
+    final highlightRects = this.highlightRects();
+
+    final top = highlightRects.firstOrNull?.top;
+
+    if (top != null) {
+      editorScrollController.scrollOffsetController.animateScroll(
+        offset: top - 300,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   void cancelSubscription() {
     _observer.close();
   }
