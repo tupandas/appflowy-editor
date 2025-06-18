@@ -137,6 +137,15 @@ class EditorState {
   final PropertyValueNotifier<Selection?> highlightNotifier =
       PropertyValueNotifier<Selection?>(null);
 
+  final ValueNotifier<bool> isAutoScrollHighlightNotifier =
+      ValueNotifier(false);
+
+  bool get isAutoScrollHighlight => isAutoScrollHighlightNotifier.value;
+
+  set isAutoScrollHighlight(bool value) {
+    isAutoScrollHighlightNotifier.value = value;
+  }
+
   /// The tap notifier of the editor.
   final PropertyValueNotifier<Selection?> tapNotifier =
       PropertyValueNotifier<Selection?>(null);
@@ -361,13 +370,7 @@ class EditorState {
     return completer.future;
   }
 
-  void updateHighlight(
-    Selection? highlight,
-  ) {
-    // if (highlight == null || highlight == this.highlight) {
-    //   return;
-    // }
-
+  void updateHighlight(Selection? highlight) {
     this.highlight = highlight;
   }
 
@@ -403,6 +406,7 @@ class EditorState {
   bool isDisposed = false;
 
   void dispose() {
+    isAutoScrollHighlightNotifier.dispose();
     isDisposed = true;
     _observer.close();
     _asyncObserver.close();
@@ -710,11 +714,48 @@ class EditorState {
     final top = highlightRects.firstOrNull?.top;
 
     if (top != null) {
-      editorScrollController.scrollOffsetController.animateScroll(
+      editorScrollController.scrollOffsetController.safeAnimateScroll(
         offset: top - 300,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 700),
         curve: Curves.easeInOut,
       );
+    } else {
+      final index = highlight?.start.path.firstOrNull;
+      if (index != null) {
+        editorScrollController.itemScrollController.jumpTo(
+          index: index,
+          alignment: 0.2,
+        );
+      }
+    }
+  }
+
+  void jumpToHighlight(EditorScrollController editorScrollController) {
+    final highlightRects = this.highlightRects();
+
+    final top = highlightRects.firstOrNull?.top;
+
+    if (top != null) {
+      editorScrollController.scrollOffsetController.safeJumpTo(
+        offset: top - 300,
+      );
+    }
+  }
+
+  void enableAutoScrollHighlight(
+    EditorScrollController editorScrollController,
+  ) {
+    isAutoScrollHighlightNotifier.value = true;
+    highlightChanged(editorScrollController);
+  }
+
+  void disableAutoScrollHighlight() {
+    isAutoScrollHighlightNotifier.value = false;
+  }
+
+  void highlightChanged(EditorScrollController editorScrollController) {
+    if (isAutoScrollHighlightNotifier.value) {
+      scrollToHighlight(editorScrollController);
     }
   }
 

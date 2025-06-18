@@ -212,7 +212,7 @@ class ItemScrollController {
   /// * 1 aligns the left edge of the item with the right edge of the view.
   /// * 0.5 aligns the left edge of the item with the center of the view.
   void jumpTo({required int index, double alignment = 0}) {
-    _scrollableListState!._jumpTo(index: index, alignment: alignment);
+    _scrollableListState?._jumpTo(index: index, alignment: alignment);
   }
 
   /// Animate the list over [duration] using the given [curve] such that the
@@ -274,6 +274,39 @@ class ItemScrollController {
 /// This is an experimental API and is subject to change.
 /// Behavior may be ill-defined in some cases.  Please file bugs.
 class ScrollOffsetController {
+  double get maxScrollOffset =>
+      _scrollableListState!.primary.scrollController.position.maxScrollExtent;
+  double get minScrollOffset =>
+      _scrollableListState!.primary.scrollController.position.minScrollExtent;
+
+  Future<void> safeAnimateScroll({
+    required double offset,
+    required Duration duration,
+    Curve curve = Curves.linear,
+  }) async {
+    final currentPosition =
+        _scrollableListState!.primary.scrollController.offset;
+    final newPosition = currentPosition + offset;
+    await _scrollableListState!.primary.scrollController.animateTo(
+      newPosition <= minScrollOffset
+          ? minScrollOffset
+          : (newPosition > maxScrollOffset ? maxScrollOffset : newPosition),
+      duration: duration,
+      curve: curve,
+    );
+  }
+
+  void safeJumpTo({
+    required double offset,
+  }) {
+    final currentPosition =
+        _scrollableListState!.primary.scrollController.offset;
+    final newPosition = currentPosition + offset;
+    _scrollableListState!.primary.scrollController.jumpTo(
+      newPosition > maxScrollOffset ? maxScrollOffset : newPosition,
+    );
+  }
+
   Future<void> animateScroll({
     required double offset,
     required Duration duration,
