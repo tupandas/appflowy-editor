@@ -382,6 +382,7 @@ class _PositionedListState extends State<PositionedList> {
             );
           }
         }
+        if (!mounted) return;
         widget.itemPositionsNotifier?.itemPositions.value = positions;
         updateScheduled = false;
       });
