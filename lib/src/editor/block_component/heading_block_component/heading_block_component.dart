@@ -166,6 +166,7 @@ class _HeadingBlockComponentWidgetState
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
               highlightColor: editorState.editorStyle.highlightColor,
+              highlightAreaColor: editorState.editorStyle.highlightAreaColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
@@ -182,6 +183,7 @@ class _HeadingBlockComponentWidgetState
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       highlightColor: editorState.editorStyle.highlightColor,
+      highlightAreaColor: editorState.editorStyle.highlightAreaColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],

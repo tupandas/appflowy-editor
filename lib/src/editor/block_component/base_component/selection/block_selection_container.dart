@@ -14,6 +14,7 @@ class BlockSelectionContainer extends StatelessWidget {
     this.cursorColor = Colors.black,
     this.selectionColor = Colors.blue,
     this.highlightColor = Colors.blue,
+    required this.highlightAreaColor,
     this.blockColor = Colors.blue,
     this.supportTypes = const [
       BlockSelectionType.cursor,
@@ -44,6 +45,9 @@ class BlockSelectionContainer extends StatelessWidget {
   // the color of the highlight
   final Color highlightColor;
 
+  // the color of the highlight area
+  final Color highlightAreaColor;
+
   // the color of the background of the block
   final Color blockColor;
 
@@ -66,7 +70,9 @@ class BlockSelectionContainer extends StatelessWidget {
       cursorColor: cursorColor,
       selectionColor: selectionColor,
       blockColor: blockColor,
-      supportTypes: supportTypes.where((element) => element != BlockSelectionType.cursor).toList(),
+      supportTypes: supportTypes
+          .where((element) => element != BlockSelectionType.cursor)
+          .toList(),
     );
 
     final blockHighlightArea = BlockHighlightArea(
@@ -74,17 +80,21 @@ class BlockSelectionContainer extends StatelessWidget {
       delegate: delegate,
       listenable: highlight,
       highlightColor: highlightColor,
+      highlightAreaColor: highlightAreaColor,
       cursorColor: cursorColor,
       blockColor: blockColor,
-      supportTypes: supportTypes.where((element) => element != BlockSelectionType.cursor).toList(),
+      supportTypes: supportTypes
+          .where((element) => element != BlockSelectionType.cursor)
+          .toList(),
     );
 
     return Stack(
       clipBehavior: Clip.none,
       // In RTL mode, if the alignment is topStart,
       //  the selection will be on the opposite side of the block component.
-      alignment:
-          Directionality.of(context) == TextDirection.ltr ? AlignmentDirectional.topStart : AlignmentDirectional.topEnd,
+      alignment: Directionality.of(context) == TextDirection.ltr
+          ? AlignmentDirectional.topStart
+          : AlignmentDirectional.topEnd,
 
       children: [
         if (remoteSelection != null)
@@ -109,7 +119,8 @@ class BlockSelectionContainer extends StatelessWidget {
 
         // cursor
         // remote cursor
-        if (supportTypes.contains(BlockSelectionType.cursor) && remoteSelection != null)
+        if (supportTypes.contains(BlockSelectionType.cursor) &&
+            remoteSelection != null)
           RemoteBlockSelectionsArea(
             node: node,
             delegate: delegate,

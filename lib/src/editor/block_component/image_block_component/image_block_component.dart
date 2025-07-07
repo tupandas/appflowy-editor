@@ -172,6 +172,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       highlightColor: editorState.editorStyle.highlightColor,
+      highlightAreaColor: editorState.editorStyle.highlightAreaColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],
@@ -211,6 +212,8 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
                   cursorColor: editorState.editorStyle.cursorColor,
                   selectionColor: editorState.editorStyle.selectionColor,
                   highlightColor: editorState.editorStyle.highlightColor,
+                  highlightAreaColor:
+                      editorState.editorStyle.highlightAreaColor,
                   child: child!,
                 ),
                 if (value) widget.menuBuilder!(widget.node, this),

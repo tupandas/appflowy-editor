@@ -252,6 +252,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       remoteSelection: editorState.remoteSelections,
       blockColor: editorState.editorStyle.selectionColor,
       highlightColor: editorState.editorStyle.highlightColor,
+      highlightAreaColor: editorState.editorStyle.highlightAreaColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],

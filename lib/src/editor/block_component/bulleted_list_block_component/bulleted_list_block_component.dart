@@ -155,6 +155,7 @@ class _BulletedListBlockComponentWidgetState
               cursorColor: editorState.editorStyle.cursorColor,
               selectionColor: editorState.editorStyle.selectionColor,
               highlightColor: editorState.editorStyle.highlightColor,
+              highlightAreaColor: editorState.editorStyle.highlightAreaColor,
               cursorWidth: editorState.editorStyle.cursorWidth,
             ),
           ),
@@ -188,6 +189,7 @@ class _BulletedListBlockComponentWidgetState
       highlight: editorState.highlightNotifier,
       blockColor: editorState.editorStyle.selectionColor,
       highlightColor: editorState.editorStyle.highlightColor,
+      highlightAreaColor: editorState.editorStyle.highlightAreaColor,
       supportTypes: const [
         BlockSelectionType.block,
       ],

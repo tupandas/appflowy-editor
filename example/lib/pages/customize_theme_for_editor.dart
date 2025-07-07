@@ -164,6 +164,7 @@ class _CustomizeThemeForEditorState extends State<CustomizeThemeForEditor> {
       dragHandleColor: Colors.green,
       selectionColor: Colors.green.withValues(alpha: 0.5),
       highlightColor: Colors.amber.withValues(alpha: 0.5),
+      highlightAreaColor: Colors.amber.withValues(alpha: 0.5),
       textStyleConfiguration: TextStyleConfiguration(
         text: GoogleFonts.poppins(
           fontSize: 14.0,

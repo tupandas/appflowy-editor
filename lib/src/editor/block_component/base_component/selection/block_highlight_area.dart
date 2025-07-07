@@ -18,6 +18,7 @@ class BlockHighlightArea extends StatefulWidget {
     required this.cursorColor,
     required this.highlightColor,
     required this.blockColor,
+    required this.highlightAreaColor,
     this.supportTypes = const [
       BlockSelectionType.cursor,
       BlockSelectionType.selection,
@@ -35,6 +36,8 @@ class BlockHighlightArea extends StatefulWidget {
 
   // the color of the selection
   final Color highlightColor;
+
+  final Color highlightAreaColor;
 
   final Color blockColor;
 
@@ -161,7 +164,7 @@ class _BlockSelectionAreaState extends State<BlockHighlightArea> {
               RepaintBoundary(
                 child: HighlightAreaPaint(
                   rects: sectionRects ?? <Rect>[],
-                  highlightColor: widget.highlightColor.withValues(alpha: 0.2),
+                  highlightColor: widget.highlightAreaColor,
                 ),
               ),
               RepaintBoundary(

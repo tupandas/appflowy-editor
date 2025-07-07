@@ -14,6 +14,7 @@ class EditorStyle extends Equatable {
     required this.dragHandleColor,
     required this.selectionColor,
     required this.highlightColor,
+    required this.highlightAreaColor,
     required this.defaultNodeBackgroundColor,
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
@@ -57,6 +58,9 @@ class EditorStyle extends Equatable {
 
   // The highlight color
   final Color highlightColor;
+
+  // The highlight area color
+  final Color highlightAreaColor;
 
   // The background color of the node.
   final Color defaultNodeBackgroundColor;
@@ -125,6 +129,7 @@ class EditorStyle extends Equatable {
     Color? cursorColor,
     Color? selectionColor,
     Color? highlightColor,
+    Color? highlightAreaColor,
     Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
@@ -141,6 +146,8 @@ class EditorStyle extends Equatable {
             selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
         highlightColor =
             highlightColor ?? const Color.fromARGB(53, 209, 14, 154),
+        highlightAreaColor =
+            highlightAreaColor ?? const Color.fromARGB(53, 209, 14, 154),
         defaultNodeBackgroundColor =
             defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
@@ -166,6 +173,7 @@ class EditorStyle extends Equatable {
     Color? dragHandleColor,
     Color? selectionColor,
     Color? highlightColor,
+    Color? highlightAreaColor,
     Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
@@ -192,6 +200,8 @@ class EditorStyle extends Equatable {
             selectionColor ?? const Color.fromARGB(53, 111, 201, 231),
         highlightColor =
             highlightColor ?? const Color.fromARGB(53, 28, 164, 35),
+        highlightAreaColor =
+            highlightAreaColor ?? const Color.fromARGB(53, 28, 164, 35),
         defaultNodeBackgroundColor =
             defaultNodeBackgroundColor ?? const Color(0xFFF5F5F5),
         textStyleConfiguration = textStyleConfiguration ??
@@ -207,6 +217,7 @@ class EditorStyle extends Equatable {
     Color? dragHandleColor,
     Color? selectionColor,
     Color? highlightColor,
+    Color? highlightAreaColor,
     Color? defaultNodeBackgroundColor,
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
@@ -233,6 +244,7 @@ class EditorStyle extends Equatable {
       dragHandleColor: dragHandleColor ?? this.dragHandleColor,
       selectionColor: selectionColor ?? this.selectionColor,
       highlightColor: highlightColor ?? this.highlightColor,
+      highlightAreaColor: highlightAreaColor ?? this.highlightAreaColor,
       defaultNodeBackgroundColor:
           defaultNodeBackgroundColor ?? this.defaultNodeBackgroundColor,
       textStyleConfiguration:
@@ -273,6 +285,7 @@ class EditorStyle extends Equatable {
         dragHandleColor,
         selectionColor,
         highlightColor,
+        highlightAreaColor,
         defaultNodeBackgroundColor,
         textStyleConfiguration,
         textSpanDecorator,

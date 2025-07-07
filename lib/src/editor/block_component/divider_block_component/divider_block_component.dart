@@ -121,6 +121,7 @@ class _DividerBlockComponentWidgetState
       cursorColor: editorState.editorStyle.cursorColor,
       selectionColor: editorState.editorStyle.selectionColor,
       highlightColor: editorState.editorStyle.highlightColor,
+      highlightAreaColor: editorState.editorStyle.highlightAreaColor,
       supportTypes: const [
         BlockSelectionType.block,
         BlockSelectionType.cursor,
