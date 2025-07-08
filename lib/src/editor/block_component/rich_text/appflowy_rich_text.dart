@@ -315,7 +315,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       return [];
     }
     final textSelection = textSelectionFromEditorSelection(selection);
-    if (textSelection == null) {
+    if (textSelection == null || !textSelection.isValid) {
       return [];
     }
     final rects = paragraph
