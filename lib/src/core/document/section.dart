@@ -7,12 +7,23 @@ class Section extends Equatable {
   final Selection selection;
   final Node parent;
 
-  const Section(
-      {required this.index,
-      required this.text,
-      required this.selection,
-      required this.parent});
+  final int characterCount;
+
+  int? characterCountAllBefore;
+
+  Section({
+    required this.index,
+    required this.text,
+    required this.selection,
+    required this.parent,
+  }) : characterCount = text.length;
 
   @override
-  List<Object?> get props => [index, text, selection];
+  List<Object?> get props => [
+        index,
+        text,
+        selection,
+        characterCount,
+        characterCountAllBefore,
+      ];
 }
