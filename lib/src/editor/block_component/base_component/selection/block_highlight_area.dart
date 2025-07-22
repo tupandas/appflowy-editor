@@ -402,19 +402,19 @@ class _HighlightAreaPainter extends CustomPainter {
       // Köşe radiuslarını belirle
       final topLeftRadius =
           previousRow == null || firstBox.left < previousRow.first.left
-              ? 4.0
+              ? 6.0
               : 0.0;
 
       final topRightRadius =
           previousRow == null || lastBox.right > previousRow.last.right
-              ? 4.0
+              ? 6.0
               : 0.0;
 
       final bottomLeftRadius =
-          nextRow == null || firstBox.left < nextRow.first.left ? 4.0 : 0.0;
+          nextRow == null || firstBox.left < nextRow.first.left ? 6.0 : 0.0;
 
       final bottomRightRadius =
-          nextRow == null || lastBox.right > nextRow.last.right ? 4.0 : 0.0;
+          nextRow == null || lastBox.right > nextRow.last.right ? 6.0 : 0.0;
 
       // Son satır için alt kısmına 4px ekle
       final bottom = nextRow == null ? lastBox.bottom + 4 : lastBox.bottom;
@@ -425,8 +425,8 @@ class _HighlightAreaPainter extends CustomPainter {
         bottom + 0, // Expand bottom
       );
 
-      path.addRRect(
-        RRect.fromRectAndCorners(
+      path.addRSuperellipse(
+        RSuperellipse.fromRectAndCorners(
           rect,
           topLeft:
               topLeftRadius > 0 ? Radius.circular(topLeftRadius) : Radius.zero,

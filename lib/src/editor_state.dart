@@ -658,20 +658,19 @@ class EditorState {
     return rects;
   }
 
-  List<Rect> highlightRects() {
-    final highlight = this.highlight;
-    if (highlight == null) {
+  List<Rect> highlightRects(Selection? selection) {
+    if (selection == null) {
       return [];
     }
 
-    final nodes = getNodesInSelection(highlight);
+    final nodes = getNodesInSelection(selection);
     final rects = <Rect>[];
 
-    if (highlight.isCollapsed && nodes.length == 1) {
+    if (selection.isCollapsed && nodes.length == 1) {
       final selectable = nodes.first.selectable;
       if (selectable != null) {
         final rect = selectable.getCursorRectInPosition(
-          highlight.end,
+          selection.end,
           shiftWithBaseOffset: true,
         );
         if (rect != null) {
@@ -690,7 +689,7 @@ class EditorState {
           continue;
         }
         final nodeRects = selectable.getRectsInSelection(
-          highlight,
+          selection,
           shiftWithBaseOffset: true,
         );
         if (nodeRects.isEmpty) {
@@ -710,8 +709,10 @@ class EditorState {
     return rects;
   }
 
-  void scrollToHighlight(EditorScrollController editorScrollController) {
-    final highlightRects = this.highlightRects();
+  void scrollToHighlight(EditorScrollController editorScrollController,
+      {Selection? selection, bool fromInside = false}) {
+    final askedSelection = selection ?? highlight;
+    final highlightRects = this.highlightRects(askedSelection);
 
     final top = highlightRects.firstOrNull?.top;
 
@@ -722,24 +723,28 @@ class EditorState {
         curve: Curves.easeInOut,
       );
     } else {
-      final index = highlight?.start.path.firstOrNull;
+      if (fromInside) return;
+      final index = askedSelection?.start.path.firstOrNull;
       if (index != null) {
-        editorScrollController.itemScrollController.jumpTo(
-          index: index,
-          alignment: 0.2,
-        );
+        editorScrollController.itemScrollController.jumpTo(index: index);
       }
+      Future.delayed(const Duration(milliseconds: 100), () {
+        scrollToHighlight(editorScrollController,
+            selection: selection, fromInside: true);
+      });
     }
   }
 
-  void jumpToHighlight(EditorScrollController editorScrollController) {
-    final highlightRects = this.highlightRects();
+  void jumpToHighlight(EditorScrollController editorScrollController,
+      {Selection? selection}) {
+    final askedSelection = selection ?? highlight;
+    final highlightRects = this.highlightRects(askedSelection);
 
     final top = highlightRects.firstOrNull?.top;
 
     if (top != null) {
       editorScrollController.scrollOffsetController.safeJumpTo(
-        offset: top - 300,
+        offset: top,
       );
     }
   }

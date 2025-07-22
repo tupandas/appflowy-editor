@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:appflowy_editor/src/core/document/table_of_content.dart'
+    show TableOfContent;
 
 /// [Document] represents an AppFlowy Editor document structure.
 ///
@@ -11,7 +13,50 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 class Document {
   Document({
     required this.root,
-  });
+  }) {
+    calculateTableOfContents();
+  }
+
+  List<TableOfContent> tableOfContents = [];
+
+  void calculateTableOfContents() {
+    final headings = nodes.where((node) => node.type == 'heading');
+    if (headings.isEmpty) {
+      return;
+    }
+
+    final tableOfContents = <TableOfContent>[];
+
+    TableOfContent? currentTableOfContent;
+
+    for (final node in nodes) {
+      if (node.type == 'heading') {
+        if (currentTableOfContent != null) {
+          tableOfContents.add(currentTableOfContent);
+          currentTableOfContent = null;
+        }
+
+        final text = node.text;
+
+        if (text != null && text.isNotEmpty) {
+          currentTableOfContent = TableOfContent(
+            text: text,
+            level: node.level,
+            selection: Selection(
+              start: Position(path: node.path, offset: 0),
+              end: Position(path: node.path, offset: text.length),
+            ),
+          );
+        }
+      }
+    }
+
+    if (currentTableOfContent != null) {
+      tableOfContents.add(currentTableOfContent);
+    }
+
+    this.tableOfContents = tableOfContents;
+  }
 
   /// Constructs a [Document] from a JSON strcuture.
   ///
