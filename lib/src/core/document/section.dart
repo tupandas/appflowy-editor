@@ -1,7 +1,7 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:equatable/equatable.dart';
 
-class Section extends Equatable {
+final class Section extends Equatable {
   final int index;
   final String text;
   final Selection selection;
