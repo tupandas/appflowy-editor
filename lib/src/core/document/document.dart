@@ -48,6 +48,13 @@ class Document {
             ),
           );
         }
+      } else {
+        final currSelection = currentTableOfContent?.selection;
+        currentTableOfContent = currentTableOfContent?.copyWith(
+          selection: currSelection?.copyWith(
+            end: Position(path: node.path, offset: node.text?.length ?? 0),
+          ),
+        );
       }
     }
 
