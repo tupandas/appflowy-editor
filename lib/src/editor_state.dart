@@ -709,8 +709,12 @@ class EditorState {
     return rects;
   }
 
-  void scrollToHighlight(EditorScrollController editorScrollController,
-      {Selection? selection, bool fromInside = false}) {
+  void scrollToHighlight(
+    EditorScrollController editorScrollController, {
+    Selection? selection,
+    bool fromInside = false,
+    bool alignToTop = true,
+  }) {
     final askedSelection = selection ?? highlight;
     final highlightRects = this.highlightRects(askedSelection);
 
@@ -726,28 +730,37 @@ class EditorState {
       if (fromInside) return;
       final index = askedSelection?.start.path.firstOrNull;
       if (index != null) {
-        editorScrollController.itemScrollController.jumpTo(index: index);
+        editorScrollController.itemScrollController.jumpTo(
+          index: index,
+          alignment: alignToTop ? 0 : 1,
+        );
       }
-      Future.delayed(const Duration(milliseconds: 100), () {
-        scrollToHighlight(editorScrollController,
-            selection: selection, fromInside: true);
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Future.delayed(Duration(milliseconds: 0), () {
+          scrollToHighlight(
+            editorScrollController,
+            selection: selection,
+            fromInside: true,
+          );
+        });
       });
     }
   }
 
-  void jumpToHighlight(EditorScrollController editorScrollController,
-      {Selection? selection}) {
-    final askedSelection = selection ?? highlight;
-    final highlightRects = this.highlightRects(askedSelection);
+  // void jumpToHighlight(EditorScrollController editorScrollController,
+  //     {Selection? selection}) {
+  //   final askedSelection = selection ?? highlight;
+  //   final highlightRects = this.highlightRects(askedSelection);
 
-    final top = highlightRects.firstOrNull?.top;
+  //   final top = highlightRects.firstOrNull?.top;
 
-    if (top != null) {
-      editorScrollController.scrollOffsetController.safeJumpTo(
-        offset: top,
-      );
-    }
-  }
+  //   if (top != null) {
+  //     editorScrollController.scrollOffsetController.safeJumpTo(
+  //       offset: top,
+  //     );
+  //   }
+  // }
 
   void enableAutoScrollHighlight(
     EditorScrollController editorScrollController,
