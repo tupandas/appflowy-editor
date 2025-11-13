@@ -379,13 +379,14 @@ class _HighlightAreaPainter extends CustomPainter {
 
   final List<Rect> rects;
   final Color selectionColor;
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = selectionColor;
     final path = Path();
 
     // Satır satır grupla
-    final rowGroups = _groupByB(rects);
+    final rowGroups = _groupByBox(rects);
     final rows = rowGroups.toList();
 
     // Her satır için path'e ekle
@@ -453,7 +454,7 @@ class _HighlightAreaPainter extends CustomPainter {
   }
 }
 
-List<List<Rect>> _groupByB(List<Rect> boxes) {
+List<List<Rect>> _groupByBox(List<Rect> boxes) {
   Map<double, List<Rect>> grouped = {};
 
   for (var box in boxes) {

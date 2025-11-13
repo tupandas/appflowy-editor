@@ -28,6 +28,7 @@ class AppFlowyEditor extends StatefulWidget {
     List<CommandShortcutEvent>? commandShortcutEvents,
     this.contextMenuBuilder,
     this.contentInsertionConfiguration,
+    this.highlightable = false,
     this.editable = true,
     this.autoFocus = false,
     this.focusedSelection,
@@ -147,6 +148,12 @@ class AppFlowyEditor extends StatefulWidget {
   /// If you want to disable the selection service, you can set [disableSelectionService] to true.
   /// If you want to disable the scroll service, you can set [disableScrollService] to true.
   final bool editable;
+
+  /// Set the value to true to enable the highlight service.
+  /// Main purpose is to disable the highlight service when the editor is not editable.
+  /// It's false by default.
+  /// If you want to create an TTS application it should be true.
+  final bool highlightable;
 
   /// Set the value to true to focus the editor on the start of the document.
   final bool autoFocus;
@@ -321,7 +328,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
       wrapper: widget.blockWrapper,
     );
 
-    if (!widget.editable) {
+    if (widget.highlightable) {
       return ScrollServiceWidget(
         key: editorState.service.scrollServiceKey,
         editorScrollController: editorScrollController,
@@ -348,6 +355,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
     }
 
     if (!widget.disableSelectionService) {
+      // dev.log('SelectionServiceWidget');
       child = SelectionServiceWidget(
         key: editorState.service.selectionServiceKey,
         cursorColor: widget.editorStyle.cursorColor,
