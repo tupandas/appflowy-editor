@@ -207,28 +207,10 @@ class _TodoListBlockComponentWidgetState
     );
 
     child = Container(
-<<<<<<< HEAD
-      margin: editorState.editorStyle.seperatorPadding ??
-          const EdgeInsets.symmetric(vertical: 2),
-      decoration: BoxDecoration(
-        color: withBackgroundColor
-            ? backgroundColor ??
-                editorState.editorStyle.defaultNodeBackgroundColor
-            : null,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        key: blockComponentKey,
-        padding: editorState.editorStyle.inBlockPadding ??
-            padding.add(const EdgeInsets.all(8)),
-        child: child,
-      ),
-=======
       decoration: withBackgroundColor ? decoration : null,
       key: blockComponentKey,
       padding: padding,
       child: child,
->>>>>>> upstream/main
     );
 
     child = BlockSelectionContainer(

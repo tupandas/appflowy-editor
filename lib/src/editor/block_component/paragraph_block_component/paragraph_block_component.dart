@@ -191,28 +191,10 @@ class _ParagraphBlockComponentWidgetState
     );
 
     child = Container(
-<<<<<<< HEAD
-      margin: editorState.editorStyle.seperatorPadding ??
-          const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        color: (withBackgroundColor
-            ? backgroundColor ??
-                editorState.editorStyle.defaultNodeBackgroundColor
-            : null),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        key: blockComponentKey,
-        padding: editorState.editorStyle.inBlockPadding ??
-            padding.add(const EdgeInsets.all(24)),
-        child: child,
-      ),
-=======
       key: blockComponentKey,
       decoration: withBackgroundColor ? decoration : null,
       padding: padding,
       child: child,
->>>>>>> upstream/main
     );
 
     child = BlockSelectionContainer(

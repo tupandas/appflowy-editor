@@ -12,11 +12,7 @@ BlockComponentBackgroundColorDecorator? blockComponentDecorator;
 mixin BlockComponentBackgroundColorMixin {
   Node get node;
 
-<<<<<<< HEAD
-  Color? get backgroundColor {
-=======
   Decoration? get decoration {
->>>>>>> upstream/main
     final colorString =
         node.attributes[blockComponentBackgroundColor] as String?;
     if (colorString == null) {
@@ -27,12 +23,8 @@ mixin BlockComponentBackgroundColorMixin {
           node,
           colorString,
         ) ??
-<<<<<<< HEAD
-        colorString.tryToColor();
-=======
         BoxDecoration(
           color: colorString.tryToColor(),
         );
->>>>>>> upstream/main
   }
 }

@@ -46,12 +46,8 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       return DesktopSelectionServiceWidget(
         key: forwardKey,
         cursorColor: widget.cursorColor,
-<<<<<<< HEAD
-        contextMenuItems: widget.contextMenuItems,
-=======
         selectionColor: widget.selectionColor,
         contextMenuBuilder: widget.contextMenuBuilder,
->>>>>>> upstream/main
         dropTargetStyle:
             widget.dropTargetStyle ?? const AppFlowyDropTargetStyle(),
         child: widget.child,

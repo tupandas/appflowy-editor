@@ -147,12 +147,7 @@ class _FloatingToolbarState extends State<FloatingToolbar> with WidgetsBindingOb
 
     if (selection == null ||
         selection.isCollapsed ||
-<<<<<<< HEAD
-        selectionType == SelectionType.block ||
-        editorState.selectionExtraInfo?[selectionExtraInfoDisableToolbar] == true) {
-=======
         selectionType == SelectionType.block) {
->>>>>>> upstream/main
       _clear();
     } else if (!disableToolbar) {
       // uses debounce to avoid the computing the rects too frequently.
