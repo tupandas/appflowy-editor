@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/editor/editor_component/service/highlight_service_widget.dart';
 import 'package:appflowy_editor/src/flutter/overlay.dart';
-import 'package:appflowy_editor/src/service/context_menu/built_in_context_menu_item.dart';
 import 'package:flutter/material.dart' hide Overlay, OverlayEntry;
 import 'package:provider/provider.dart';
 
@@ -27,7 +26,7 @@ class AppFlowyEditor extends StatefulWidget {
     Map<String, BlockComponentBuilder>? blockComponentBuilders,
     List<CharacterShortcutEvent>? characterShortcutEvents,
     List<CommandShortcutEvent>? commandShortcutEvents,
-    List<List<ContextMenuItem>>? contextMenuItems,
+    this.contextMenuBuilder,
     this.contentInsertionConfiguration,
     this.editable = true,
     this.autoFocus = false,
@@ -54,8 +53,7 @@ class AppFlowyEditor extends StatefulWidget {
         characterShortcutEvents =
             characterShortcutEvents ?? standardCharacterShortcutEvents,
         commandShortcutEvents =
-            commandShortcutEvents ?? standardCommandShortcutEvents,
-        contextMenuItems = contextMenuItems ?? standardContextMenuItems;
+            commandShortcutEvents ?? standardCommandShortcutEvents;
 
   final EditorState editorState;
 
@@ -123,16 +121,13 @@ class AppFlowyEditor extends StatefulWidget {
   /// ```
   final List<CommandShortcutEvent> commandShortcutEvents;
 
-  /// The context menu items.
+  /// The context menu builder.
   ///
-  /// They will be shown when the user right click on the editor.
-  /// Each item will be separated by a divider.
+  /// It will be shown when the user right click on the editor.
   ///
-  /// Defaults to [standardContextMenuItems].
+  /// See the built-in [ContextMenu] implementation.
   ///
-  /// If empty the context menu won't appear.
-  ///
-  final List<List<ContextMenuItem>>? contextMenuItems;
+  final ContextMenuWidgetBuilder? contextMenuBuilder;
 
   /// Provide a editorScrollController to control the scroll behavior
   ///
@@ -358,7 +353,7 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
         cursorColor: widget.editorStyle.cursorColor,
         selectionColor: widget.editorStyle.selectionColor,
         showMagnifier: widget.showMagnifier,
-        contextMenuItems: widget.contextMenuItems,
+        contextMenuBuilder: widget.contextMenuBuilder,
         dropTargetStyle: widget.dropTargetStyle,
         child: child,
       );

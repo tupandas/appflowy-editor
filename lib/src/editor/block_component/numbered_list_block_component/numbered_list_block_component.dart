@@ -181,6 +181,7 @@ class _NumberedListBlockComponentWidgetState
     );
 
     child = Container(
+<<<<<<< HEAD
       margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
@@ -196,6 +197,12 @@ class _NumberedListBlockComponentWidgetState
             padding.add(const EdgeInsets.all(8)),
         child: child,
       ),
+=======
+      key: blockComponentKey,
+      decoration: withBackgroundColor ? decoration : null,
+      padding: padding,
+      child: child,
+>>>>>>> upstream/main
     );
 
     child = BlockSelectionContainer(

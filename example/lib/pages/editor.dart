@@ -436,7 +436,7 @@ reading the note.
 
                   editorState.logConfiguration
                     ..handler = debugPrint
-                    ..level = AppFlowyEditorLogLevel.all;
+                    ..level = AppFlowyEditorLogLevel.off;
 
                   editorState.transactionStream.listen((event) {
                     if (event.$1 == TransactionTime.after) {

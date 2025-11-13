@@ -158,6 +158,7 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
     );
 
     child = Container(
+<<<<<<< HEAD
       margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
@@ -171,6 +172,12 @@ class _QuoteBlockComponentWidgetState extends State<QuoteBlockComponentWidget>
             padding.add(const EdgeInsets.all(8)),
         child: child,
       ),
+=======
+      decoration: decoration,
+      key: blockComponentKey,
+      padding: padding,
+      child: child,
+>>>>>>> upstream/main
     );
 
     child = BlockSelectionContainer(

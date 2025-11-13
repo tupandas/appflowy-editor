@@ -191,6 +191,7 @@ class _HeadingBlockComponentWidgetState
     );
 
     child = Container(
+<<<<<<< HEAD
       margin: editorState.editorStyle.seperatorPadding ??
           const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
@@ -203,6 +204,11 @@ class _HeadingBlockComponentWidgetState
             editorState.editorStyle.inBlockPadding ?? const EdgeInsets.all(8.0),
         child: child,
       ),
+=======
+      padding: padding,
+      decoration: decoration,
+      child: child,
+>>>>>>> upstream/main
     );
 
     if (widget.showActions && widget.actionBuilder != null) {

@@ -395,9 +395,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     textSpan = adjustTextSpan(textSpan);
     final delta = widget.node.delta;
     if (delta != null && delta.isNotEmpty) {
-      textSpan = textSpan.updateTextStyle(
-        const TextStyle(color: Colors.transparent),
-      );
+      textSpan = textSpan.copyWith(text: '');
     }
     return RichText(
       key: placeholderTextKey,
@@ -551,14 +549,10 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   TextSpan getPlaceholderTextSpan() {
     return TextSpan(
-      children: [
-        TextSpan(
-          text: widget.placeholderText,
-          style: textStyleConfiguration.text.copyWith(
-            height: textStyleConfiguration.lineHeight,
-          ),
-        ),
-      ],
+      text: widget.placeholderText,
+      style: textStyleConfiguration.text.copyWith(
+        height: textStyleConfiguration.lineHeight,
+      ),
     );
   }
 
