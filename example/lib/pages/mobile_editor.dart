@@ -35,27 +35,27 @@ class _MobileEditorState extends State<MobileEditor> {
     );
 
     editorState.highlightNotifier.addListener(() {
-      final highlight = editorState.highlightNotifier.value;
+      // final highlight = editorState.highlightNotifier.value;
 
       return;
 
-      final visibleRange = editorScrollController.visibleRangeNotifier.value;
+      // final visibleRange = editorScrollController.visibleRangeNotifier.value;
 
-      if (highlight != null) {
-        final node = editorState.getNodesInSelection(highlight).lastOrNull;
+      // if (highlight != null) {
+      //   final node = editorState.getNodesInSelection(highlight).lastOrNull;
 
-        final index =
-            node != null ? editorState.document.nodes.indexOf(node) : null;
-        if (index != null) {
-          if (index < visibleRange.$1 || index > visibleRange.$2) {
-            editorScrollController.itemScrollController.scrollTo(
-              index: index + 1,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
-          }
-        }
-      }
+      //   final index =
+      //       node != null ? editorState.document.nodes.indexOf(node) : null;
+      //   if (index != null) {
+      //     if (index < visibleRange.$1 || index > visibleRange.$2) {
+      //       editorScrollController.itemScrollController.scrollTo(
+      //         index: index + 1,
+      //         duration: const Duration(milliseconds: 250),
+      //         curve: Curves.easeInOut,
+      //       );
+      //     }
+      //   }
+      // }
     });
 
     // () async {
@@ -157,7 +157,7 @@ class _MobileEditorState extends State<MobileEditor> {
                         "attributes": {
                           "bold": true,
                           "italic": false,
-                          "underline": false
+                          "underline": false,
                         },
                       },
                       {
@@ -166,7 +166,7 @@ class _MobileEditorState extends State<MobileEditor> {
                         "attributes": {
                           "bold": false,
                           "italic": false,
-                          "underline": false
+                          "underline": false,
                         },
                       }
                     ],
