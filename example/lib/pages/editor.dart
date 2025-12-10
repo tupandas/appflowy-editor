@@ -429,7 +429,7 @@ reading the note.
 
 """,
                       inlineSyntaxes: [
-                        ...md.ExtensionSet.commonMark.inlineSyntaxes
+                        ...md.ExtensionSet.commonMark.inlineSyntaxes,
                       ],
                     ),
                   );

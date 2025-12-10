@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const Text('AppFlowy Editor'),
-        actions: [],
+        actions: const [],
       ),
       body: SafeArea(
         maintainBottomViewPadding: true,
@@ -140,7 +140,8 @@ class _HomePageState extends State<HomePage> {
           _buildListTile(context, 'With Large Document (10000+ lines)', () {
             final nodes = List.generate(
               10000,
-              (index) => paragraphNode(text: '$index ${generateRandomString(50)}'),
+              (index) =>
+                  paragraphNode(text: '$index ${generateRandomString(50)}'),
             );
             final editorState = EditorState(
               document: Document(root: pageNode(children: nodes)),
@@ -151,7 +152,8 @@ class _HomePageState extends State<HomePage> {
             _loadEditor(context, jsonString);
           }),
           _buildListTile(context, 'With Example.html', () async {
-            final htmlString = await rootBundle.loadString('assets/example.html');
+            final htmlString =
+                await rootBundle.loadString('assets/example.html');
             final html = htmlToDocument(htmlString);
             final jsonString = Future<String>.value(
               jsonEncode(

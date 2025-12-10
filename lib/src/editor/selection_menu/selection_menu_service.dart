@@ -219,20 +219,14 @@ class SelectionMenu extends SelectionMenuService {
     final bottomRight = rect.bottomRight;
     final topRight = rect.topRight;
     var offset = bottomRight + menuOffset;
-    _offset = Offset(
-      offset.dx,
-      offset.dy,
-    );
+    _offset = Offset(offset.dx, offset.dy);
 
     // show above
     if (offset.dy + menuHeight >= editorOffset.dy + editorHeight) {
       offset = topRight - menuOffset;
       _alignment = Alignment.bottomLeft;
 
-      _offset = Offset(
-        offset.dx,
-        editorHeight + editorOffset.dy - offset.dy,
-      );
+      _offset = Offset(offset.dx, editorHeight + editorOffset.dy - offset.dy);
     }
 
     // show on left
@@ -241,10 +235,7 @@ class SelectionMenu extends SelectionMenuService {
           ? Alignment.topRight
           : Alignment.bottomRight;
 
-      _offset = Offset(
-        editorWidth - _offset.dx + editorOffset.dx,
-        _offset.dy,
-      );
+      _offset = Offset(editorWidth - _offset.dx + editorOffset.dx, _offset.dy);
     }
   }
 }
@@ -258,7 +249,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['text'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
@@ -270,7 +261,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 1, h1'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertHeadingAfterSelection(editorState, 1);
     },
   ),
@@ -282,7 +273,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 2, h2'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertHeadingAfterSelection(editorState, 2);
     },
   ),
@@ -294,7 +285,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['heading 3, h3'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertHeadingAfterSelection(editorState, 3);
     },
   ),
@@ -319,7 +310,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['bulleted list', 'list', 'unordered list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertBulletedListAfterSelection(editorState);
     },
   ),
@@ -331,7 +322,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['numbered list', 'list', 'ordered list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertNumberedListAfterSelection(editorState);
     },
   ),
@@ -343,7 +334,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['todo list', 'list', 'checkbox list'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertCheckboxAfterSelection(editorState);
     },
   ),
@@ -355,7 +346,7 @@ final List<SelectionMenuItem> standardSelectionMenuItems = [
       style: style,
     ),
     keywords: ['quote', 'refer'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertQuoteAfterSelection(editorState);
     },
   ),
@@ -372,7 +363,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['text'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertNodeAfterSelection(editorState, paragraphNode());
     },
   ),
@@ -384,7 +375,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['heading 1, h1'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertHeadingAfterSelection(editorState, 1);
     },
   ),
@@ -396,7 +387,7 @@ final List<SelectionMenuItem> singleColumnVisibleMenuItems = [
       style: style,
     ),
     keywords: ['heading 2, h2'],
-    handler: (editorState, _, __) {
+    handler: (editorState, _, _) {
       insertHeadingAfterSelection(editorState, 2);
     },
   ),

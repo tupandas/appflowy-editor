@@ -5,8 +5,8 @@ version: 6.0.0
 homepage: "https://github.com/AppFlowy-IO/appflowy-editor"
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.32.0"
+  sdk: ">=3.10.0-290.4.beta <4.0.0"
+  flutter: ">=3.38.0"
 
 description: A highly customizable rich-text editor for Flutter. The AppFlowy
   Editor project for AppFlowy and beyond.
@@ -46,8 +46,8 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  intl_utils: "^2.8.10"
-  mockito: "^5.4.1"
+  intl_utils: "^2.8.12"
+  mockito: "^5.5.1"
   network_image_mock: "^2.1.1"
   path_provider: "^2.1.5"
   pubspec_dependency_sorter: "^1.0.5"
