@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/core/document/table_of_content.dart'
     show TableOfContent;
+import 'package:fractional_indexing_dart/fractional_indexing_dart.dart';
 
 /// [Document] represents an AppFlowy Editor document structure.
 ///
@@ -11,9 +12,7 @@ import 'package:appflowy_editor/src/core/document/table_of_content.dart'
 /// **DO NOT** directly mutate the properties of a [Document] object.
 ///
 class Document {
-  Document({
-    required this.root,
-  }) {
+  Document({required this.root}) {
     calculateTableOfContents();
   }
 
@@ -101,11 +100,9 @@ class Document {
   factory Document.empty() {
     final root = Node(
       type: 'document',
-      children: LinkedList<Node>()..add(TextNode.empty()),
+      children: RankedLinkedList<Node>()..add(TextNode.empty()),
     );
-    return Document(
-      root: root,
-    );
+    return Document(root: root);
   }
 
   /// Creates a blank [Document] containing an empty root [Node].
@@ -118,9 +115,7 @@ class Document {
       type: 'page',
       children: withInitialText ? [paragraphNode()] : [],
     );
-    return Document(
-      root: root,
-    );
+    return Document(root: root);
   }
 
   /// The root [Node] of the [Document]
@@ -178,6 +173,16 @@ class Document {
     }
 
     return false;
+  }
+
+  bool insetAtRootRank(String rank, Node node) {
+    try {
+      // if the rank is already exists, it will throw an error
+      root.insertAtRank(rank, node);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Inserts a [Node]s at the given [Path].
@@ -276,8 +281,6 @@ class Document {
   /// Encodes the [Document] into a JSON structure.
   ///
   Map<String, Object> toJson() {
-    return {
-      'document': root.toJson(),
-    };
+    return {'document': root.toJson()};
   }
 }

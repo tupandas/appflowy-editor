@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fractional_indexing_dart/fractional_indexing_dart.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class NodeExternalValues {
@@ -26,20 +27,25 @@ abstract class NodeExternalValues {
 /// }
 /// ```
 ///
-final class Node extends ChangeNotifier with LinkedListEntry<Node> {
+final class Node extends ChangeNotifier
+    with LinkedListEntry<Node>, RankedLinkedListEntry<Node> {
   Node({
     required this.type,
     this.databaseIndex = -1,
     String? id,
+    String? initialRank,
     this.parent,
     Attributes attributes = const {},
     Iterable<Node> children = const [],
-  }) : _children = LinkedList<Node>()
+  }) : _children = RankedLinkedList<Node>()
          ..addAll(
            children.map((e) => e..unlink()),
          ), // unlink the given children to avoid the error of "node has already a parent"
        _attributes = attributes,
        id = id ?? Uuid().v4() {
+    if (initialRank != null) {
+      super.rank = initialRank;
+    }
     for (final child in children) {
       child.parent = this;
     }
@@ -106,13 +112,10 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   Node? parent;
 
   /// The children of the node.
-  final LinkedList<Node> _children;
+  final RankedLinkedList<Node> _children;
   List<Node> get children {
-    _cacheChildren ??= _children.toList(growable: false);
-    return _cacheChildren!;
+    return _children.indexedList;
   }
-
-  List<Node>? _cacheChildren;
 
   /// The attributes of the node.
   Attributes _attributes;
@@ -164,6 +167,20 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     return child?.childAtPath(path.sublist(1));
   }
 
+  void insertAtRank(String rank, Node entry) {
+    AppFlowyEditorLog.editor.debug('insert Node $entry at rank $rank');
+
+    entry._resetRelationshipIfNeeded();
+    entry.parent = this;
+
+    _children.markAsDirty();
+
+    // if the rank is already exists, it will throw an error
+    _children.insert(rank, entry);
+
+    notifyListeners();
+  }
+
   /// Inserts a [Node] at a given [index]
   ///
   /// If no [index] is supplied, inserts at the
@@ -180,7 +197,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
 
-    _cacheChildren = null;
+    _children.markAsDirty();
 
     if (_children.isEmpty) {
       _children.add(entry);
@@ -206,7 +223,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     entry.parent = parent;
     super.insertAfter(entry);
 
-    parent?._cacheChildren = null;
+    parent?._children.markAsDirty();
 
     // Notifies the new node.
     parent?.notifyListeners();
@@ -218,7 +235,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     entry.parent = parent;
     super.insertBefore(entry);
 
-    parent?._cacheChildren = null;
+    parent?._children.markAsDirty();
 
     // Notifies the new node.
     parent?.notifyListeners();
@@ -233,7 +250,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
     AppFlowyEditorLog.editor.debug('delete Node $this from path $path');
     super.unlink();
 
-    parent?._cacheChildren = null;
+    parent?._children.markAsDirty();
 
     parent?.notifyListeners();
     parent = null;
@@ -243,7 +260,7 @@ final class Node extends ChangeNotifier with LinkedListEntry<Node> {
   // reset the relationship of the node before inserting it to another node
   //  to ensure it is not in the tree
   // otherwise, it will throw a state error
-  //  'Bad state: LinkedNode is already in a LinkedList'
+  //  'Bad state: LinkedNode is already in a RankedLinkedList'
   void _resetRelationshipIfNeeded() {
     if (parent != null || list != null) {
       unlink();
