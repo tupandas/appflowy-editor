@@ -6,10 +6,9 @@ final class Section extends Equatable {
   final String text;
   final Selection selection;
   final Node parent;
-
   final int characterCount;
 
-  int? characterCountAllBefore;
+  int? characterOffset;
 
   Section({
     required this.index,
@@ -20,10 +19,14 @@ final class Section extends Equatable {
 
   @override
   List<Object?> get props => [
-        index,
-        text,
-        selection,
-        characterCount,
-        characterCountAllBefore,
-      ];
+    index,
+    text,
+    selection,
+    characterCount,
+    characterOffset,
+  ];
+}
+
+extension type const Sections(List<Section> sections) implements List<Section> {
+  const Sections.empty() : sections = const [];
 }
