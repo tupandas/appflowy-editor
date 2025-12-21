@@ -280,10 +280,10 @@ final class Node extends ChangeNotifier
     return null;
   }
 
-  Map<String, Object> toJson() {
+  Map<String, Object> toJson({bool includeDatabaseIndex = true}) {
     final map = <String, Object>{
       'id': id,
-      'databaseIndex': databaseIndex,
+      if (includeDatabaseIndex) 'databaseIndex': databaseIndex,
       'type': type,
     };
     if (rank != null) {
@@ -291,7 +291,9 @@ final class Node extends ChangeNotifier
     }
     if (children.isNotEmpty) {
       map['children'] = children
-          .map((node) => node.toJson())
+          .map(
+            (node) => node.toJson(includeDatabaseIndex: includeDatabaseIndex),
+          )
           .toList(growable: false);
     }
     if (attributes.isNotEmpty) {
@@ -410,7 +412,7 @@ final class TextNode extends Node {
   }
 
   @override
-  Map<String, Object> toJson() {
+  Map<String, Object> toJson({bool includeDatabaseIndex = true}) {
     final map = super.toJson();
     map['delta'] = delta.toJson();
     return map;
