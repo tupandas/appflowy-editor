@@ -62,6 +62,7 @@ final class Node extends ChangeNotifier
   factory Node.fromJson(Map<String, dynamic> json) {
     final node = Node(
       id: json['id'] as String? ?? Uuid().v4(),
+      initialRank: json['rank'] as String?,
       databaseIndex: json['databaseIndex'] != null
           ? (json['databaseIndex'] as num).toDouble()
           : -1,
@@ -285,6 +286,9 @@ final class Node extends ChangeNotifier
       'databaseIndex': databaseIndex,
       'type': type,
     };
+    if (rank != null) {
+      map['rank'] = rank!;
+    }
     if (children.isNotEmpty) {
       map['children'] = children
           .map((node) => node.toJson())
