@@ -120,6 +120,7 @@ final class Node extends ChangeNotifier
 
   /// The attributes of the node.
   Attributes _attributes;
+
   Attributes get attributes => {..._attributes};
 
   /// The path of the node.
@@ -165,6 +166,7 @@ final class Node extends ChangeNotifier
 
     final index = path.first;
     final child = childAtIndexOrNull(index);
+
     return child?.childAtPath(path.sublist(1));
   }
 
@@ -191,9 +193,8 @@ final class Node extends ChangeNotifier
     final length = _children.length;
     index ??= length;
 
-    AppFlowyEditorLog.editor.debug(
-      'insert Node $entry at path ${path + [index]}}',
-    );
+    AppFlowyEditorLog.editor
+        .debug('insert Node $entry at path ${path + [index]}}');
 
     entry._resetRelationshipIfNeeded();
     entry.parent = this;
@@ -203,6 +204,7 @@ final class Node extends ChangeNotifier
     if (_children.isEmpty) {
       _children.add(entry);
       notifyListeners();
+
       return;
     }
 
@@ -255,6 +257,7 @@ final class Node extends ChangeNotifier
 
     parent?.notifyListeners();
     parent = null;
+
     return true;
   }
 
@@ -277,6 +280,7 @@ final class Node extends ChangeNotifier
     if (attributes['delta'] is List) {
       return Delta.fromJson(attributes['delta']);
     }
+
     return null;
   }
 
@@ -300,6 +304,7 @@ final class Node extends ChangeNotifier
       // filter the null value
       map['data'] = attributes..removeWhere((_, value) => value == null);
     }
+
     return map;
   }
 
@@ -344,6 +349,7 @@ final class Node extends ChangeNotifier
     }
     node.externalValues = externalValues;
     node.extraInfos = extraInfos;
+
     return node;
   }
 
@@ -360,6 +366,7 @@ final class Node extends ChangeNotifier
       return previous;
     }
     final index = parent.children.indexOf(this);
+
     return parent._computePath([index, ...previous]);
   }
 
@@ -371,7 +378,10 @@ final class Node extends ChangeNotifier
       final errorMessage =
           '''Please submit an issue to https://github.com/AppFlowy-IO/appflowy-editor/issues if you see this error!
           node = ${toJson()}''';
-      assert(parent != null, errorMessage);
+      assert(
+        parent != null,
+        errorMessage,
+      );
       // also, its parent should contain this node
       assert(
         parent!.children.where((element) => element.id == id).length == 1,
@@ -391,21 +401,30 @@ final class TextNode extends Node {
     required Delta delta,
     Iterable<Node>? children,
     Attributes? attributes,
-  }) : _delta = delta,
-       super(
-         type: 'text',
-         children: children?.toList() ?? [],
-         attributes: attributes ?? {},
-         id: '',
-       );
+  })  : _delta = delta,
+        super(
+          type: 'text',
+          children: children?.toList() ?? [],
+          attributes: attributes ?? {},
+          id: '',
+        );
 
   TextNode.empty({Attributes? attributes})
-    : _delta = Delta(operations: [TextInsert('')]),
-      super(type: 'text', attributes: attributes ?? {});
+      : _delta = Delta(operations: [TextInsert('')]),
+        super(
+          type: 'text',
+          attributes: attributes ?? {},
+        );
+
+  @override
+  @Deprecated('Use type instead')
+  String get subtype => '';
 
   Delta _delta;
+
   @override
   Delta get delta => _delta;
+
   set delta(Delta v) {
     _delta = v;
     notifyListeners();
@@ -415,6 +434,7 @@ final class TextNode extends Node {
   Map<String, Object> toJson({bool includeDatabaseIndex = true}) {
     final map = super.toJson();
     map['delta'] = delta.toJson();
+
     return map;
   }
 
@@ -433,9 +453,12 @@ final class TextNode extends Node {
     );
     if (children == null && this.children.isNotEmpty) {
       for (final child in this.children) {
-        textNode._children.add(child.copyWith()..parent = textNode);
+        textNode._children.add(
+          child.copyWith()..parent = textNode,
+        );
       }
     }
+
     return textNode;
   }
 
@@ -452,6 +475,7 @@ extension NodeEquality on Iterable<Node> {
         return false;
       }
     }
+
     return true;
   }
 

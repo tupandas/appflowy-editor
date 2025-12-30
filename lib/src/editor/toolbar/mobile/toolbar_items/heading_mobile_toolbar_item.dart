@@ -11,12 +11,19 @@ final headingMobileToolbarItem = MobileToolbarItem.withMenu(
     if (selection == null) {
       return const SizedBox.shrink();
     }
-    return _HeadingMenu(selection, editorState);
+
+    return _HeadingMenu(
+      selection,
+      editorState,
+    );
   },
 );
 
 class _HeadingMenu extends StatefulWidget {
-  const _HeadingMenu(this.selection, this.editorState);
+  const _HeadingMenu(
+    this.selection,
+    this.editorState,
+  );
 
   final Selection selection;
   final EditorState editorState;
@@ -68,7 +75,10 @@ class _HeadingMenuState extends State<_HeadingMenu> {
             size: 20,
             color: MobileToolbarTheme.of(context).iconColor,
           ),
-          label: Text(currentHeading.label, maxLines: 2),
+          label: Text(
+            currentHeading.label,
+            maxLines: 2,
+          ),
           isSelected: isSelected,
           onPressed: () {
             setState(() {
@@ -110,5 +120,9 @@ class HeadingUnit {
   final String label;
   final int level;
 
-  HeadingUnit({required this.icon, required this.label, required this.level});
+  HeadingUnit({
+    required this.icon,
+    required this.label,
+    required this.level,
+  });
 }

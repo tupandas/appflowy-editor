@@ -66,6 +66,7 @@ class TodoListBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return TodoListBlockComponentWidget(
       key: node.key,
       node: node,
@@ -280,6 +281,7 @@ class _TodoListBlockComponentWidgetState
     if (!checked) {
       return null;
     }
+
     return TextStyle(
       decoration: TextDecoration.lineThrough,
       color: Colors.grey.shade400,

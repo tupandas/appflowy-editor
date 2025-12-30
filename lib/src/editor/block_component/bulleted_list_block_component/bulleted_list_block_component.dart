@@ -46,6 +46,7 @@ class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return BulletedListBlockComponentWidget(
       key: node.key,
       node: node,
@@ -222,6 +223,7 @@ class _BulletedListIcon extends StatelessWidget {
       }
       parent = parent.parent;
     }
+
     return level;
   }
 
@@ -232,17 +234,15 @@ class _BulletedListIcon extends StatelessWidget {
     final textScaleFactor =
         context.read<EditorState>().editorStyle.textScaleFactor;
 
-    return ConstrainedBox(
+    return Container(
       constraints:
           const BoxConstraints(minWidth: 26, minHeight: 22) * textScaleFactor,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 4.0),
-        child: Center(
-          child: Text(
-            icon,
-            style: textStyle,
-            textScaler: TextScaler.linear(0.5 * textScaleFactor),
-          ),
+      padding: const EdgeInsets.only(right: 4.0),
+      child: Center(
+        child: Text(
+          icon,
+          style: textStyle,
+          textScaler: TextScaler.linear(0.5 * textScaleFactor),
         ),
       ),
     );

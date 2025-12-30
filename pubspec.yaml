@@ -43,15 +43,20 @@ dependencies:
   uuid: ^4.5.2
 
 dev_dependencies:
+  awesome_lints:
+    git:
+      url: https://github.com/LucasXu0/awesome_lints.git
+      ref: main
+  custom_lint: ^0.8.1
   flutter_lints: ^6.0.0
   flutter_localizations:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  intl_utils: 2.8.13
-  mockito: 5.6.1
+  intl_utils: "^2.8.2"
+  mockito: "^5.4.1"
   network_image_mock: "^2.1.1"
-  path_provider: "^2.1.5"
+  path_provider: "^2.0.5"
   pubspec_dependency_sorter: "^1.0.5"
 
 platforms:

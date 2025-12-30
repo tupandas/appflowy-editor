@@ -22,10 +22,14 @@ enum MobileSelectionDragMode {
   none,
   leftSelectionHandle,
   rightSelectionHandle,
-  cursor,
+  cursor;
 }
 
-enum MobileSelectionHandlerType { leftHandle, rightHandle, cursorHandle }
+enum MobileSelectionHandlerType {
+  leftHandle,
+  rightHandle,
+  cursorHandle,
+}
 
 // the value type is MobileSelectionDragMode
 const String selectionDragModeKey = 'selection_drag_mode';
@@ -111,6 +115,8 @@ class _MobileSelectionServiceWidgetState
   @override
   void dispose() {
     clearSelection();
+    _lastPanOffset.dispose();
+    currentSelection.dispose();
     WidgetsBinding.instance.removeObserver(this);
     selectionNotifierAfterLayout.dispose();
     editorState.selectionNotifier.removeListener(_updateSelection);
@@ -138,6 +144,7 @@ class _MobileSelectionServiceWidgetState
         _buildCollapsedHandle(),
       ],
     );
+
     return PlatformExtension.isIOS
         ? MobileSelectionGestureDetector(
             onTapUp: _onTapUpIOS,
@@ -170,7 +177,11 @@ class _MobileSelectionServiceWidgetState
         }
         final renderBox = context.findRenderObject() as RenderBox;
         final local = renderBox.globalToLocal(offset);
-        return MobileMagnifier(size: widget.magnifierSize, offset: local);
+
+        return MobileMagnifier(
+          size: widget.magnifierSize,
+          offset: local,
+        );
       },
     );
   }
@@ -181,6 +192,7 @@ class _MobileSelectionServiceWidgetState
       builder: (context, selection, _) {
         if (selection == null || !selection.isCollapsed) {
           isCollapsedHandleVisible = false;
+
           return const SizedBox.shrink();
         }
 
@@ -189,6 +201,7 @@ class _MobileSelectionServiceWidgetState
             editorState.selectionUpdateReason !=
                 SelectionUpdateReason.uiEvent) {
           isCollapsedHandleVisible = false;
+
           return const SizedBox.shrink();
         }
 
@@ -198,6 +211,7 @@ class _MobileSelectionServiceWidgetState
               MobileSelectionDragMode.rightSelectionHandle,
             ].contains(dragMode)) {
           isCollapsedHandleVisible = false;
+
           return const SizedBox.shrink();
         }
 
@@ -212,6 +226,7 @@ class _MobileSelectionServiceWidgetState
 
         if (node == null || rect == null) {
           isCollapsedHandleVisible = false;
+
           return const SizedBox.shrink();
         }
 
@@ -220,6 +235,7 @@ class _MobileSelectionServiceWidgetState
         _clearCollapsedHandleOnAndroid();
 
         final editorStyle = editorState.editorStyle;
+
         return MobileCollapsedHandle(
           layerLink: node.layerLink,
           rect: rect,
@@ -269,8 +285,7 @@ class _MobileSelectionServiceWidgetState
           return const SizedBox.shrink();
         }
 
-        final isCollapsedWhenDraggingHandle =
-            selection.isCollapsed &&
+        final isCollapsedWhenDraggingHandle = selection.isCollapsed &&
             [
               MobileSelectionDragMode.leftSelectionHandle,
               MobileSelectionDragMode.rightSelectionHandle,
@@ -304,6 +319,7 @@ class _MobileSelectionServiceWidgetState
         }
 
         final editorStyle = editorState.editorStyle;
+
         return MobileSelectionHandle(
           layerLink: node.layerLink,
           rect: handleType == HandleType.left ? rects.first : rects.last,
@@ -427,12 +443,15 @@ class _MobileSelectionServiceWidgetState
     if (dy == null || _panStartScrollDy == null) {
       panStartOffset = _panStartOffset!;
     } else {
-      panStartOffset = _panStartOffset!.translate(0, _panStartScrollDy! - dy);
+      panStartOffset = _panStartOffset!.translate(
+        0,
+        _panStartScrollDy! - dy,
+      );
     }
 
-    final selectionInRange = getNodeInOffset(
-      panEndOffset,
-    )?.selectable?.getSelectionInRange(panStartOffset, panEndOffset);
+    final selectionInRange = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getSelectionInRange(panStartOffset, panEndOffset);
     final end = selectionInRange?.end;
     if (end == null) {
       return;
@@ -446,15 +465,18 @@ class _MobileSelectionServiceWidgetState
           end: end,
         ).normalized;
         break;
+
       case MobileSelectionDragMode.rightSelectionHandle:
         newSelection = Selection(
           start: _panStartSelection!.normalized.start,
           end: end,
         ).normalized;
         break;
+
       case MobileSelectionDragMode.cursor:
         newSelection = Selection.collapsed(end);
         break;
+
       case MobileSelectionDragMode.none:
         return;
     }
@@ -482,8 +504,10 @@ class _MobileSelectionServiceWidgetState
     final selectable = node?.selectable;
     if (selectable == null) {
       clearSelection();
+
       return null;
     }
+
     return selectable.getPositionInOffset(offset);
   }
 
@@ -506,6 +530,7 @@ class _MobileSelectionServiceWidgetState
 
     if (currentSelection.value != selection) {
       clearSelection();
+
       return;
     }
 
@@ -559,9 +584,10 @@ class _MobileSelectionServiceWidgetState
     final panStartOffset = dy == null
         ? _panStartOffset!
         : _panStartOffset!.translate(0, _panStartScrollDy! - dy);
-    final end = getNodeInOffset(
-      panEndOffset,
-    )?.selectable?.getSelectionInRange(panStartOffset, panEndOffset).end;
+    final end = getNodeInOffset(panEndOffset)
+        ?.selectable
+        ?.getSelectionInRange(panStartOffset, panEndOffset)
+        .end;
 
     Selection? newSelection;
 
@@ -597,7 +623,9 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
     );
   }
 
@@ -607,6 +635,7 @@ class _MobileSelectionServiceWidgetState
     // if the tap happens on a selection area, don't change the selection
     if (_isClickOnSelectionArea(offset)) {
       appFlowyEditorOnTapSelectionArea.add(0);
+
       return;
     }
 
@@ -643,6 +672,7 @@ class _MobileSelectionServiceWidgetState
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
+
       return;
     }
     updateSelection(selection);
@@ -655,6 +685,7 @@ class _MobileSelectionServiceWidgetState
     final selectable = node?.selectable;
     if (selectable == null) {
       clearSelection();
+
       return;
     }
     Selection selection = Selection(
@@ -706,7 +737,9 @@ class _MobileSelectionServiceWidgetState
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
     );
   }
 
@@ -738,6 +771,7 @@ class _MobileSelectionServiceWidgetState
     final selection = node?.selectable?.getWordBoundaryInOffset(offset);
     if (selection == null) {
       clearSelection();
+
       return;
     }
 
@@ -752,7 +786,9 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {selectionExtraInfoDisableFloatingToolbar: true},
+      extraInfo: {
+        selectionExtraInfoDisableFloatingToolbar: true,
+      },
     );
   }
 
@@ -768,9 +804,8 @@ class _MobileSelectionServiceWidgetState
     final offset = details.globalPosition;
     _lastPanOffset.value = offset;
 
-    final wordBoundary = getNodeInOffset(
-      offset,
-    )?.selectable?.getWordBoundaryInOffset(offset);
+    final wordBoundary =
+        getNodeInOffset(offset)?.selectable?.getWordBoundaryInOffset(offset);
 
     Selection? newSelection;
 
@@ -799,7 +834,9 @@ class _MobileSelectionServiceWidgetState
       editorState.updateSelectionWithReason(
         newSelection,
         reason: SelectionUpdateReason.uiEvent,
-        extraInfo: {selectionExtraInfoDisableFloatingToolbar: true},
+        extraInfo: {
+          selectionExtraInfoDisableFloatingToolbar: true,
+        },
       );
     }
   }
@@ -811,7 +848,9 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {selectionExtraInfoDoNotAttachTextService: false},
+      extraInfo: {
+        selectionExtraInfoDoNotAttachTextService: false,
+      },
     );
   }
 
@@ -825,6 +864,7 @@ class _MobileSelectionServiceWidgetState
     if (details.delta.dx.abs() < details.delta.dy.abs() &&
         (_panStartOffset == null || _panStartScrollDy == null)) {
       _isPanStartHorizontal = false;
+
       return;
     }
     // first successful call to onPanUpdate, initialize pan variables
@@ -871,15 +911,13 @@ class _MobileSelectionServiceWidgetState
 
     currentSelectedNodes = nodes;
 
-    final backwardNodes = selection.isBackward
-        ? nodes
-        : nodes.reversed.toList(growable: false);
+    final backwardNodes =
+        selection.isBackward ? nodes : nodes.reversed.toList(growable: false);
     final normalizedSelection = selection.normalized;
     assert(normalizedSelection.isBackward);
 
-    AppFlowyEditorLog.selection.debug(
-      'update selection areas, $normalizedSelection',
-    );
+    AppFlowyEditorLog.selection
+        .debug('update selection areas, $normalizedSelection');
 
     for (var i = 0; i < backwardNodes.length; i++) {
       final node = backwardNodes[i];
@@ -932,6 +970,7 @@ class _MobileSelectionServiceWidgetState
         return true;
       }
     }
+
     return false;
   }
 
@@ -953,5 +992,6 @@ class _MobileSelectionServiceWidgetState
   DropTargetRenderData? getDropTargetRenderData(
     Offset offset, {
     DragTargetNodeInterceptor? interceptor,
-  }) => null;
+  }) =>
+      null;
 }

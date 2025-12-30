@@ -116,6 +116,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           final padding = builder?.configuration.blockSelectionAreaMargin(
             widget.node,
           );
+
           return Positioned.fromRect(
             rect: prevBlockRect!,
             child: Container(
@@ -148,6 +149,7 @@ class _BlockSelectionAreaState extends State<BlockSelectionArea> {
           );
           // force to show the cursor
           cursorKey.currentState?.unwrapOrNull<CursorState>()?.show();
+
           return cursor;
         } else {
           // show the selection area when the selection is not collapsed

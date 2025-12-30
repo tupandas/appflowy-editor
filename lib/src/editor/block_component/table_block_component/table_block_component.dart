@@ -68,15 +68,14 @@ class TableDefaults {
 
 enum TableDirection { row, col }
 
-typedef TableBlockComponentMenuBuilder =
-    Widget Function(
-      Node,
-      EditorState,
-      int,
-      TableDirection,
-      VoidCallback?,
-      VoidCallback?,
-    );
+typedef TableBlockComponentMenuBuilder = Widget Function(
+  Node,
+  EditorState,
+  int,
+  TableDirection,
+  VoidCallback?,
+  VoidCallback?,
+);
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
@@ -95,6 +94,7 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
     TableDefaults.rowHeight = tableStyle.rowHeight;
     TableDefaults.colMinimumWidth = tableStyle.colMinimumWidth;
     TableDefaults.borderWidth = tableStyle.borderWidth;
+
     return TableBlockComponentWidget(
       key: node.key,
       tableNode: TableNode(node: node),
@@ -103,78 +103,86 @@ class TableBlockComponentBuilder extends BlockComponentBuilder {
       menuBuilder: menuBuilder,
       tableStyle: tableStyle,
       showActions: showActions(node),
-      actionBuilder: (context, state) =>
-          actionBuilder(blockComponentContext, state),
-      actionTrailingBuilder: (context, state) =>
-          actionTrailingBuilder(blockComponentContext, state),
+      actionBuilder: (context, state) => actionBuilder(
+        blockComponentContext,
+        state,
+      ),
+      actionTrailingBuilder: (context, state) => actionTrailingBuilder(
+        blockComponentContext,
+        state,
+      ),
     );
   }
 
   @override
   BlockComponentValidate get validate => (node) {
-    // check the node is valid
-    if (node.attributes.isEmpty) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: node is empty',
-      );
-      return false;
-    }
+        // check the node is valid
+        if (node.attributes.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: node is empty');
 
-    // check the node has rowPosition and colPosition
-    if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
-        !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: node has no colsLen or rowsLen',
-      );
-      return false;
-    }
-
-    final colsLen = node.attributes[TableBlockKeys.colsLen];
-    final rowsLen = node.attributes[TableBlockKeys.rowsLen];
-
-    // check its children
-    final children = node.children;
-    if (children.isEmpty) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: children is empty',
-      );
-      return false;
-    }
-
-    if (children.length != colsLen * rowsLen) {
-      AppFlowyEditorLog.editor.debug(
-        'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
-      );
-      return false;
-    }
-
-    // all children should contain rowPosition and colPosition
-    for (var i = 0; i < colsLen; i++) {
-      for (var j = 0; j < rowsLen; j++) {
-        final child = children.where(
-          (n) =>
-              n.attributes[TableCellBlockKeys.colPosition] == i &&
-              n.attributes[TableCellBlockKeys.rowPosition] == j,
-        );
-        if (child.isEmpty) {
-          AppFlowyEditorLog.editor.debug(
-            'TableBlockComponentBuilder: child($i, $j) is empty',
-          );
           return false;
         }
 
-        // should only contains one child
-        if (child.length != 1) {
+        // check the node has rowPosition and colPosition
+        if (!node.attributes.containsKey(TableBlockKeys.colsLen) ||
+            !node.attributes.containsKey(TableBlockKeys.rowsLen)) {
           AppFlowyEditorLog.editor.debug(
-            'TableBlockComponentBuilder: child($i, $j) is not unique',
+            'TableBlockComponentBuilder: node has no colsLen or rowsLen',
           );
+
           return false;
         }
-      }
-    }
 
-    return true;
-  };
+        final colsLen = node.attributes[TableBlockKeys.colsLen];
+        final rowsLen = node.attributes[TableBlockKeys.rowsLen];
+
+        // check its children
+        final children = node.children;
+        if (children.isEmpty) {
+          AppFlowyEditorLog.editor
+              .debug('TableBlockComponentBuilder: children is empty');
+
+          return false;
+        }
+
+        if (children.length != colsLen * rowsLen) {
+          AppFlowyEditorLog.editor.debug(
+            'TableBlockComponentBuilder: children length(${children.length}) is not equal to colsLen * rowsLen($colsLen * $rowsLen)',
+          );
+
+          return false;
+        }
+
+        // all children should contain rowPosition and colPosition
+        for (var i = 0; i < colsLen; i++) {
+          for (var j = 0; j < rowsLen; j++) {
+            final child = children.where(
+              (n) =>
+                  n.attributes[TableCellBlockKeys.colPosition] == i &&
+                  n.attributes[TableCellBlockKeys.rowPosition] == j,
+            );
+            if (child.isEmpty) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is empty',
+              );
+
+              return false;
+            }
+
+            // should only contains one child
+            if (child.length != 1) {
+              AppFlowyEditorLog.editor.debug(
+                'TableBlockComponentBuilder: child($i, $j) is not unique',
+              );
+
+              return false;
+            }
+          }
+        }
+
+        return true;
+      };
 }
 
 class TableBlockComponentWidget extends BlockComponentStatefulWidget {
@@ -212,6 +220,12 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   final _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = Scrollbar(
       controller: _scrollController,
@@ -228,20 +242,10 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       ),
     );
 
-    //TODO(oben): add isNodeHighlighted
-
-    child = DecoratedBox(
-      decoration: BoxDecoration(
-        color: editorState.editorStyle.defaultNodeBackgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        key: tableKey,
-        padding:
-            editorState.editorStyle.inBlockPadding ??
-            padding.add(const EdgeInsets.all(8)),
-        child: child,
-      ),
+    child = Padding(
+      key: tableKey,
+      padding: padding,
+      child: child,
     );
 
     child = BlockSelectionContainer(
@@ -297,12 +301,16 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
             tableBox.size,
       ];
     }
+
     return [Offset.zero & _renderBox.size];
   }
 
   @override
-  Selection getSelectionInRange(Offset start, Offset end) =>
-      Selection.single(path: widget.node.path, startOffset: 0, endOffset: 1);
+  Selection getSelectionInRange(Offset start, Offset end) => Selection.single(
+        path: widget.node.path,
+        startOffset: 0,
+        endOffset: 1,
+      );
 
   @override
   bool get shouldCursorBlink => false;
@@ -311,11 +319,16 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Offset localToGlobal(Offset offset, {bool shiftWithBaseOffset = false}) =>
+  Offset localToGlobal(
+    Offset offset, {
+    bool shiftWithBaseOffset = false,
+  }) =>
       _renderBox.localToGlobal(offset);
 
   @override
-  Rect getBlockRect({bool shiftWithBaseOffset = false}) {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getRectsInSelection(Selection.invalid()).first;
   }
 
@@ -325,6 +338,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
     bool shiftWithBaseOffset = false,
   }) {
     final size = _renderBox.size;
+
     return Rect.fromLTWH(-size.width / 2.0, 0, size.width, size.height);
   }
 }
@@ -360,12 +374,18 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
         ..insertNode(selection.end.path, tableNode.node)
         ..deleteNode(currentNode);
       transaction.afterSelection = Selection.collapsed(
-        Position(path: selection.end.path + [0, 0], offset: 0),
+        Position(
+          path: selection.end.path + [0, 0],
+          offset: 0,
+        ),
       );
     } else {
       transaction.insertNode(selection.end.path.next, tableNode.node);
       transaction.afterSelection = Selection.collapsed(
-        Position(path: selection.end.path.next + [0, 0], offset: 0),
+        Position(
+          path: selection.end.path.next + [0, 0],
+          offset: 0,
+        ),
       );
     }
 

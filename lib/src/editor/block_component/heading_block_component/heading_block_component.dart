@@ -29,6 +29,7 @@ Node headingNode({
   Attributes? attributes,
 }) {
   assert(level >= 1 && level <= 6);
+
   return Node(
     type: HeadingBlockKeys.type,
     attributes: {
@@ -52,6 +53,7 @@ class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   @override
   BlockComponentWidget build(BlockComponentContext blockComponentContext) {
     final node = blockComponentContext.node;
+
     return HeadingBlockComponentWidget(
       key: node.key,
       node: node,
@@ -151,6 +153,7 @@ class _HeadingBlockComponentWidgetState
                   widget.textStyleBuilder?.call(level) ??
                       defaultTextStyle(level),
                 );
+
                 return result;
               },
               placeholderText: placeholderText,
@@ -211,6 +214,7 @@ class _HeadingBlockComponentWidgetState
   TextStyle? defaultTextStyle(int level) {
     final fontSizes = [32.0, 28.0, 24.0, 18.0, 18.0, 18.0];
     final fontSize = fontSizes.elementAtOrNull(level) ?? 18.0;
+
     return TextStyle(
       fontSize: fontSize,
       fontWeight: FontWeight.bold,

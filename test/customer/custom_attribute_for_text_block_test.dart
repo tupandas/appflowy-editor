@@ -55,6 +55,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
             ),
           );
         }
+
         return textSpan;
       },
     );
@@ -70,6 +71,7 @@ class CustomAttributeKeyForTextBlock extends StatelessWidget {
         },
       );
     final editorState = EditorState(document: document);
+
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(

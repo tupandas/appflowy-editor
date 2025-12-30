@@ -286,6 +286,7 @@ class EditorState {
   Transaction get transaction {
     final transaction = Transaction(document: document);
     transaction.beforeSelection = selection;
+
     return transaction;
   }
 
@@ -301,6 +302,7 @@ class EditorState {
   /// The rules to apply to the document.
   List<DocumentRule> get documentRules => _documentRules;
   List<DocumentRule> _documentRules = [];
+
   set documentRules(List<DocumentRule> value) {
     _documentRules = value;
 
@@ -344,6 +346,7 @@ class EditorState {
     if (renderObject != null && renderObject is RenderBox) {
       return renderObject;
     }
+
     return null;
   }
 
@@ -397,6 +400,7 @@ class EditorState {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       completer.complete();
     });
+
     return completer.future;
   }
 

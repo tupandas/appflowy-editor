@@ -322,6 +322,7 @@ class _PositionedListState extends State<PositionedList> {
         final elements = registeredElements.value;
         if (elements == null) {
           updateScheduled = false;
+
           return;
         }
         final positions = <ItemPosition>[];
