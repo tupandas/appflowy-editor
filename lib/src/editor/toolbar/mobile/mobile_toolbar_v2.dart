@@ -93,7 +93,7 @@ class _MobileToolbarV2State extends State<MobileToolbarV2> {
         // add a bottom offset to make sure the toolbar is above the keyboard
         ValueListenableBuilder(
           valueListenable: isKeyboardShow,
-          builder: (context, isKeyboardShow, __) {
+          builder: (context, isKeyboardShow, _) {
             return SizedBox(
               height: isKeyboardShow ? widget.toolbarHeight : 0,
             );

@@ -24,7 +24,7 @@ class BlockComponentContainer extends StatelessWidget {
     final child = ChangeNotifierProvider<Node>.value(
       value: node,
       child: Consumer<Node>(
-        builder: (_, __, ___) {
+        builder: (_, _, _) {
           AppFlowyEditorLog.editor
               .debug('node is rebuilding...: type: ${node.type} ');
 
