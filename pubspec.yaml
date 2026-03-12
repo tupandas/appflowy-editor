@@ -20,7 +20,7 @@ dependencies:
   file_picker: ^10.3.10
   flutter:
     sdk: flutter
-  flutter_svg: 2.2.3
+  flutter_svg: 2.2.4
   html: ^0.15.6
   http: "^1.6.0"
   intl: "^0.20.2"
@@ -40,7 +40,7 @@ dependencies:
   equatable: ^2.0.8
   flutter_animate: ^4.5.2
   # scrollview_observer: ^1.26.0
-  uuid: ^4.5.2
+  uuid: ^4.5.3
 
 dev_dependencies:
   awesome_lints:
