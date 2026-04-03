@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:appflowy_editor/src/core/document/table_of_content.dart'
     show TableOfContent;
-import 'package:fractional_indexing_dart/fractional_indexing_dart.dart';
 
 /// [Document] represents an AppFlowy Editor document structure.
 ///
@@ -107,9 +106,7 @@ class Document {
       children: withInitialText ? [paragraphNode()] : [],
     );
 
-    return Document(
-      root: root,
-    );
+    return Document(root: root);
   }
 
   /// The root [Node] of the [Document]
@@ -282,8 +279,6 @@ class Document {
   /// Encodes the [Document] into a JSON structure.
   ///
   Map<String, Object> toJson() {
-    return {
-      'document': root.toJson(),
-    };
+    return {'document': root.toJson()};
   }
 }
