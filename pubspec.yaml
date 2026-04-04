@@ -15,7 +15,7 @@ dependencies:
   super_sliver_list: ^0.4.1
   fractional_indexing_dart: ^1.0.7
   collection: "^1.19.1"
-  device_info_plus: 12.3.0
+  device_info_plus: 12.4.0
   diff_match_patch: "^0.4.1"
   file_picker: ^10.3.10
   flutter:
@@ -24,9 +24,9 @@ dependencies:
   html: ^0.15.6
   http: "^1.6.0"
   intl: "^0.20.2"
-  keyboard_height_plugin: 0.2.0
+  keyboard_height_plugin: 0.3.0
   logging: "^1.3.0"
-  markdown: "^7.3.0"
+  markdown: "^7.3.1"
   # nanoid: "^1.0.0"
   numerus: "^2.3.0"
   pdf: "^3.11.3"
@@ -36,7 +36,6 @@ dependencies:
   universal_html: 2.3.0
   universal_platform: ^1.1.0
   url_launcher: "^6.3.2"
-
   equatable: ^2.0.8
   flutter_animate: ^4.5.2
   # scrollview_observer: ^1.26.0
